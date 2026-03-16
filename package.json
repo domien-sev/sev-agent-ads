@@ -1,0 +1,35 @@
+{
+  "name": "@domien-sev/agent-ads",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Ad scaling agent — generates creatives and manages campaigns across Meta, Google, TikTok, Pinterest",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@domien-sev/agent-sdk": "*",
+    "@domien-sev/directus-sdk": "*",
+    "@domien-sev/shared-types": "*",
+    "@domien-sev/shopify-sdk": "*",
+    "@domien-sev/creative-sdk": "*",
+    "@domien-sev/ads-sdk": "*",
+    "@domien-sev/vector-sdk": "*",
+    "@directus/sdk": "^18.0.0",
+    "@anthropic-ai/sdk": "^0.39.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
