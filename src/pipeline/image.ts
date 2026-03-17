@@ -59,11 +59,10 @@ export async function generateTemplateImages(
           ...(product.discount_percent && { discount: `-${product.discount_percent}%` }),
         };
 
-        const result = await agent.creatomate.renderImage(
-          template.provider_template_id === "source" && template.config
-            ? { source: applyModifications(template.config as Record<string, unknown>, modifications) }
-            : { templateId: template.provider_template_id, modifications },
-        );
+        const renderRequest = template.provider_template_id === "source" && template.config
+          ? { source: applyModifications(template.config as Record<string, unknown>, modifications) }
+          : { templateId: template.provider_template_id, modifications };
+        const result = await agent.creatomate.renderImage(renderRequest as any);
 
         // Upload to asset storage
         const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "jpg");

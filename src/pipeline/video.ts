@@ -58,11 +58,10 @@ export async function generateTemplateVideos(
         ...(product.discount_percent && { discount: `-${product.discount_percent}%` }),
       };
 
-      const result = await agent.creatomate.renderVideo(
-        tpl.provider_template_id === "source" && tpl.config
-          ? { source: applyModifications(tpl.config, modifications) }
-          : { templateId: tpl.provider_template_id, modifications },
-      );
+      const renderRequest = tpl.provider_template_id === "source" && tpl.config
+        ? { source: applyModifications(tpl.config, modifications) }
+        : { templateId: tpl.provider_template_id, modifications };
+      const result = await agent.creatomate.renderVideo(renderRequest as any);
 
       const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "mp4");
       const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "video/mp4");
