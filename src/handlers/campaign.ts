@@ -30,7 +30,7 @@ export async function handleCampaign(agent: AdsAgent, message: RoutedMessage): P
   const [, campaignName, platform] = match;
 
   // Get approved creatives that aren't in a campaign yet
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   const availableCreatives = await client.request(
     readItems("ad_creatives", {
       filter: {
@@ -94,7 +94,7 @@ export async function handleCampaign(agent: AdsAgent, message: RoutedMessage): P
 }
 
 async function approveAndPublish(agent: AdsAgent, message: RoutedMessage): Promise<AgentResponse> {
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
 
   // Find pending campaigns
   const pending = await client.request(

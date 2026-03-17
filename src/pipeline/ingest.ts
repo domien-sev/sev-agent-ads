@@ -7,7 +7,7 @@ import { createItem, updateItem, readItems } from "@directus/sdk";
  * Uses `media` connection (NOT deprecated `image` field).
  */
 export async function syncProducts(agent: AdsAgent, options?: { limit?: number }): Promise<AdProductRecord[]> {
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   const limit = options?.limit ?? 50;
 
   agent.log.info(`Syncing up to ${limit} products from Shopify...`);

@@ -16,7 +16,7 @@ export async function generateTemplateImages(
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating template images for: ${product.title}`);
 
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
 
   // Get active templates from Directus
   const templates = await client.request(
@@ -94,7 +94,7 @@ export async function generateAIImages(
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating AI images for: ${product.title}`);
 
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   const creatives: AdCreativeRecord[] = [];
   const cd = brief.creative_direction;
 
@@ -174,7 +174,7 @@ export async function generatePremiumImages(
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating premium images for: ${product.title}`);
 
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   const creatives: AdCreativeRecord[] = [];
   const creativeId = randomUUID();
 

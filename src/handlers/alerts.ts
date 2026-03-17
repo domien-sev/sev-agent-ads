@@ -15,7 +15,7 @@ export interface AlertResult {
 
 /** Run daily performance check and generate alerts */
 export async function runDailyAlerts(agent: AdsAgent): Promise<AlertResult> {
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   const alerts: string[] = [];
 
   const campaigns = await client.request(

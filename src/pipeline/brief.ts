@@ -39,7 +39,7 @@ export async function generateBrief(
     status: "draft",
   };
 
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   const created = await client.request(createItem("ad_briefs", brief));
   const result = { ...brief, id: (created as { id: string }).id } as AdBriefRecord;
 

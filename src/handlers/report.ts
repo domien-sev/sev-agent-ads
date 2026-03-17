@@ -16,7 +16,7 @@ export async function handleReport(agent: AdsAgent, message: RoutedMessage): Pro
   const endDate = new Date().toISOString().split("T")[0];
   const startDate = new Date(Date.now() - days * 86_400_000).toISOString().split("T")[0];
 
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
 
   // Get active campaigns
   const campaigns = await client.request(

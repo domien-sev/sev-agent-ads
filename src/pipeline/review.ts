@@ -45,7 +45,7 @@ export async function qualityCheck(creative: AdCreativeRecord): Promise<QualityR
 
 /** Process a batch of creatives through review */
 export async function processReviewQueue(agent: AdsAgent): Promise<ReviewSummary> {
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
 
   const pendingReview = await client.request(
     readItems("ad_creatives", {

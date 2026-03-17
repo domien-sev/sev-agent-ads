@@ -16,7 +16,7 @@ export async function generateTemplateVideos(
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating template videos for: ${product.title}`);
 
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
 
   const templates = await client.request(
     readItems("ad_templates", { filter: { active: { _eq: true }, type: { _eq: "video" } }, limit: 5 }),
@@ -94,7 +94,7 @@ export async function generateProductVideos(
   }
 
   agent.log.info(`Generating product video for: ${product.title}`);
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   const creatives: AdCreativeRecord[] = [];
   const creativeId = randomUUID();
 
@@ -159,7 +159,7 @@ export async function generateAIVideos(
   }
 
   agent.log.info(`Generating AI video for: ${product.title}`);
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   const creatives: AdCreativeRecord[] = [];
   const creativeId = randomUUID();
 

@@ -28,7 +28,7 @@ export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): P
   }
 
   // Step 1: Find or sync product
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
   let products = await client.request(
     readItems("ad_products", {
       filter: {

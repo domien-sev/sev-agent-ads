@@ -20,7 +20,7 @@ export async function publishCampaign(
     throw new Error(`Platform client not configured for: ${campaign.platform}`);
   }
 
-  const client = agent.directus.getClient("sev-ai");
+  const client = agent.directus.getClient("sev-ai") as any;
 
   // Get approved creatives for this campaign
   const creatives = await client.request(
