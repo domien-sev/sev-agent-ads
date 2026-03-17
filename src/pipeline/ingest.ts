@@ -66,7 +66,7 @@ export async function syncProducts(agent: AdsAgent, options?: { limit?: number }
       .map((e: { node: { image?: { url: string } } }) => e.node.image?.url)
       .filter(Boolean) as string[];
 
-    const metafields = new Map(
+    const metafields = new Map<string, string>(
       (node.metafields?.edges ?? []).map((e: { node: { key: string; value: string } }) => [e.node.key, e.node.value]),
     );
 
