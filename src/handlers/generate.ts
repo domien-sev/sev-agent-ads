@@ -33,9 +33,8 @@ export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): P
     readItems("ad_products", {
       filter: {
         _or: [
-          { title: { _contains: productQuery } },
-          { handle: { _contains: productQuery } },
-          { tags: { _contains: productQuery } },
+          { title: { _icontains: productQuery } },
+          { handle: { _icontains: productQuery } },
         ],
       },
       limit: 5,
