@@ -142,7 +142,7 @@ export class AdsAgent extends BaseAgent {
       // Default: show help
       return this.helpResponse(message);
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : String(err);
+      const errMsg = err instanceof Error ? err.message : JSON.stringify(err);
       this.logger.error(`Handler error: ${errMsg}`);
       return {
         channel_id: message.channel_id,

@@ -23,8 +23,9 @@ async function main() {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify(response));
       } catch (err) {
-        const errMsg = err instanceof Error ? err.message : String(err);
+        const errMsg = err instanceof Error ? err.message : JSON.stringify(err, null, 2);
         console.error("Error handling message:", errMsg);
+        if (err instanceof Error && err.stack) console.error(err.stack);
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: errMsg }));
       }
