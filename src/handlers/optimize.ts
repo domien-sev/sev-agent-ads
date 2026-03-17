@@ -1,7 +1,7 @@
 import type { RoutedMessage, AgentResponse, AdCampaignRecord, AdRuleRecord } from "@domien-sev/shared-types";
 import type { AdsAgent } from "../agent.js";
 import { PerformanceCollector } from "@domien-sev/ads-sdk";
-import { readItems, updateItem } from "@directus/sdk";
+import { getClient, readItems, updateItem } from "../lib/directus.js";
 
 /**
  * Handler for campaign optimization.
@@ -17,7 +17,7 @@ export async function handleOptimize(agent: AdsAgent, message: RoutedMessage): P
   }
 
   // Run optimization rules
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   const rules = await client.request(
     readItems("ad_rules", { filter: { enabled: { _eq: true } } }),
@@ -88,7 +88,7 @@ async function pauseCampaign(agent: AdsAgent, message: RoutedMessage): Promise<A
   const text = message.text.trim();
   const campaignName = text.replace(/^pause\s*/i, "").trim();
 
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
   const campaigns = await client.request(
     readItems("ad_campaigns", {
       filter: { name: { _contains: campaignName }, status: { _eq: "active" } },
@@ -135,7 +135,7 @@ function evaluateCondition(value: number, operator: string, threshold: number): 
 }
 
 async function executeAction(agent: AdsAgent, campaign: AdCampaignRecord, rule: AdRuleRecord): Promise<string> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   switch (rule.action.type) {
     case "pause": {

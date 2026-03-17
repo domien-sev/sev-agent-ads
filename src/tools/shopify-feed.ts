@@ -1,6 +1,6 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord } from "@domien-sev/shared-types";
-import { readItems } from "@directus/sdk";
+import { getClient, readItems } from "../lib/directus.js";
 
 /**
  * Product feed utilities for Google Merchant API and Meta Product Catalog.
@@ -9,7 +9,7 @@ import { readItems } from "@directus/sdk";
 
 /** Generate a Google Merchant-compatible product feed */
 export async function generateGoogleFeed(agent: AdsAgent): Promise<MerchantProduct[]> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   const products = await client.request(
     readItems("ad_products", {
@@ -41,7 +41,7 @@ export async function generateGoogleFeed(agent: AdsAgent): Promise<MerchantProdu
 
 /** Generate a Meta Commerce-compatible product feed */
 export async function generateMetaFeed(agent: AdsAgent): Promise<MetaCatalogProduct[]> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   const products = await client.request(
     readItems("ad_products", {

@@ -1,7 +1,7 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord, AdBriefRecord, AdCreativeRecord } from "@domien-sev/shared-types";
 import { AssetStorage } from "@domien-sev/creative-sdk";
-import { createItem, readItems } from "@directus/sdk";
+import { getClient, createItem, readItems } from "../lib/directus.js";
 import { randomUUID } from "node:crypto";
 
 /**
@@ -16,7 +16,7 @@ export async function generateTemplateVideos(
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating template videos for: ${product.title}`);
 
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   const templates = await client.request(
     readItems("ad_templates", { filter: { active: { _eq: true }, type: { _eq: "video" } }, limit: 5 }),
@@ -94,7 +94,7 @@ export async function generateProductVideos(
   }
 
   agent.log.info(`Generating product video for: ${product.title}`);
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
   const creatives: AdCreativeRecord[] = [];
   const creativeId = randomUUID();
 
@@ -159,7 +159,7 @@ export async function generateAIVideos(
   }
 
   agent.log.info(`Generating AI video for: ${product.title}`);
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
   const creatives: AdCreativeRecord[] = [];
   const creativeId = randomUUID();
 

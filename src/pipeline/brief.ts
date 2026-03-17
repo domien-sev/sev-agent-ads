@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord, AdBriefRecord } from "@domien-sev/shared-types";
-import { createItem } from "@directus/sdk";
+import { getClient, createItem } from "../lib/directus.js";
 
 const anthropic = new Anthropic();
 
@@ -39,7 +39,7 @@ export async function generateBrief(
     status: "draft",
   };
 
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
   const created = await client.request(createItem("ad_briefs", brief));
   const result = { ...brief, id: (created as { id: string }).id } as AdBriefRecord;
 

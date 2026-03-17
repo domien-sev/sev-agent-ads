@@ -1,7 +1,7 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdPerformanceRecord, AdCampaignRecord } from "@domien-sev/shared-types";
 import { PerformanceCollector } from "@domien-sev/ads-sdk";
-import { createItem, readItems } from "@directus/sdk";
+import { getClient, createItem, readItems } from "../lib/directus.js";
 
 /**
  * Performance metrics collection + feedback loop utilities.
@@ -12,7 +12,7 @@ export async function collectAndStorePerformance(
   agent: AdsAgent,
   daysBack = 1,
 ): Promise<AdPerformanceRecord[]> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   const endDate = new Date().toISOString().split("T")[0];
   const startDate = new Date(Date.now() - daysBack * 86_400_000).toISOString().split("T")[0];
@@ -75,7 +75,7 @@ export async function getTopPerformingStyles(
   daysBack = 30,
   limit = 10,
 ): Promise<PerformanceInsight[]> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   const startDate = new Date(Date.now() - daysBack * 86_400_000).toISOString().split("T")[0];
 

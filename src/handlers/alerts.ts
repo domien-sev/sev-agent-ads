@@ -1,7 +1,7 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdCampaignRecord } from "@domien-sev/shared-types";
 import { PerformanceCollector } from "@domien-sev/ads-sdk";
-import { readItems } from "@directus/sdk";
+import { getClient, readItems } from "../lib/directus.js";
 
 /**
  * Scheduled alert handler — daily summaries, budget depletion, ROAS drops.
@@ -15,7 +15,7 @@ export interface AlertResult {
 
 /** Run daily performance check and generate alerts */
 export async function runDailyAlerts(agent: AdsAgent): Promise<AlertResult> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
   const alerts: string[] = [];
 
   const campaigns = await client.request(

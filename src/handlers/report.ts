@@ -1,7 +1,7 @@
 import type { RoutedMessage, AgentResponse, AdCampaignRecord } from "@domien-sev/shared-types";
 import type { AdsAgent } from "../agent.js";
 import { PerformanceCollector } from "@domien-sev/ads-sdk";
-import { readItems } from "@directus/sdk";
+import { getClient, readItems } from "../lib/directus.js";
 
 /**
  * Handler for performance reporting.
@@ -16,7 +16,7 @@ export async function handleReport(agent: AdsAgent, message: RoutedMessage): Pro
   const endDate = new Date().toISOString().split("T")[0];
   const startDate = new Date(Date.now() - days * 86_400_000).toISOString().split("T")[0];
 
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   // Get active campaigns
   const campaigns = await client.request(

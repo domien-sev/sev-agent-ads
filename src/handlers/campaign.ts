@@ -1,6 +1,6 @@
 import type { RoutedMessage, AgentResponse, AdCampaignRecord, AdPlatform } from "@domien-sev/shared-types";
 import type { AdsAgent } from "../agent.js";
-import { createItem, readItems, updateItem } from "@directus/sdk";
+import { getClient, createItem, readItems, updateItem } from "../lib/directus.js";
 import { buildApprovalMessage, publishCampaign } from "../pipeline/publish.js";
 
 /**
@@ -30,7 +30,7 @@ export async function handleCampaign(agent: AdsAgent, message: RoutedMessage): P
   const [, campaignName, platform] = match;
 
   // Get approved creatives that aren't in a campaign yet
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
   const availableCreatives = await client.request(
     readItems("ad_creatives", {
       filter: {
@@ -94,7 +94,7 @@ export async function handleCampaign(agent: AdsAgent, message: RoutedMessage): P
 }
 
 async function approveAndPublish(agent: AdsAgent, message: RoutedMessage): Promise<AgentResponse> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   // Find pending campaigns
   const pending = await client.request(

@@ -1,13 +1,13 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord } from "@domien-sev/shared-types";
-import { createItem, updateItem, readItems } from "@directus/sdk";
+import { getClient, createItem, updateItem, readItems } from "../lib/directus.js";
 
 /**
  * Product ingestion pipeline — syncs products from Shopify to ad_products.
  * Uses `media` connection (NOT deprecated `image` field).
  */
 export async function syncProducts(agent: AdsAgent, options?: { limit?: number }): Promise<AdProductRecord[]> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
   const limit = options?.limit ?? 50;
 
   agent.log.info(`Syncing up to ${limit} products from Shopify...`);

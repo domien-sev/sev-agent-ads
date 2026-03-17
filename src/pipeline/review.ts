@@ -1,6 +1,6 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdCreativeRecord } from "@domien-sev/shared-types";
-import { readItems, updateItem } from "@directus/sdk";
+import { getClient, readItems, updateItem } from "../lib/directus.js";
 
 /**
  * Review pipeline — quality checks + Slack/Directus routing.
@@ -45,7 +45,7 @@ export async function qualityCheck(creative: AdCreativeRecord): Promise<QualityR
 
 /** Process a batch of creatives through review */
 export async function processReviewQueue(agent: AdsAgent): Promise<ReviewSummary> {
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   const pendingReview = await client.request(
     readItems("ad_creatives", {

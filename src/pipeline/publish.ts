@@ -1,7 +1,7 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdCampaignRecord, AdCreativeRecord, AdPlatform } from "@domien-sev/shared-types";
 import type { AdPlatformClient } from "@domien-sev/ads-sdk";
-import { readItems, updateItem } from "@directus/sdk";
+import { getClient, readItems, updateItem } from "../lib/directus.js";
 
 /**
  * Campaign publishing pipeline — push approved creatives to ad platforms.
@@ -20,7 +20,7 @@ export async function publishCampaign(
     throw new Error(`Platform client not configured for: ${campaign.platform}`);
   }
 
-  const client = agent.directus.getClient("sev-ai") as any;
+  const client = getClient(agent);
 
   // Get approved creatives for this campaign
   const creatives = await client.request(
