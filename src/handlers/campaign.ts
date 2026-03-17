@@ -1,4 +1,4 @@
-import type { RoutedMessage, AgentResponse, AdCampaignRecord, AdPlatform } from "@domien-sev/shared-types";
+import type { RoutedMessage, AgentResponse, AdCampaignRecord, AdCreativeRecord, AdPlatform } from "@domien-sev/shared-types";
 import type { AdsAgent } from "../agent.js";
 import { getClient, createItem, readItems, updateItem } from "../lib/directus.js";
 import { buildApprovalMessage, publishCampaign } from "../pipeline/publish.js";
@@ -31,7 +31,7 @@ export async function handleCampaign(agent: AdsAgent, message: RoutedMessage): P
 
   // Get approved creatives that aren't in a campaign yet
   const client = getClient(agent);
-  const availableCreatives = await client.request(
+  const availableCreatives = (await client.request(
     readItems("ad_creatives", {
       filter: {
         status: { _eq: "approved" },
@@ -40,7 +40,7 @@ export async function handleCampaign(agent: AdsAgent, message: RoutedMessage): P
       },
       limit: 50,
     }),
-  );
+  )) as AdCreativeRecord[];
 
   if (availableCreatives.length === 0) {
     return {

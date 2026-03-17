@@ -13,7 +13,8 @@ export async function syncProducts(agent: AdsAgent, options?: { limit?: number }
   agent.log.info(`Syncing up to ${limit} products from Shopify...`);
 
   // Fetch products from Shopify (uses media connection)
-  const shopifyProducts = await agent.shopifyClient.graphql(`{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const shopifyProducts: any = await agent.shopifyClient.graphql(`{
     products(first: ${limit}) {
       edges {
         node {
@@ -95,7 +96,7 @@ export async function syncProducts(agent: AdsAgent, options?: { limit?: number }
     // Upsert into Directus
     const existing = await client.request(
       readItems("ad_products", { filter: { shopify_id: { _eq: shopifyId } }, limit: 1 }),
-    );
+    ) as AdProductRecord[];
 
     if (existing.length > 0) {
       await client.request(updateItem("ad_products", existing[0].id!, record));
