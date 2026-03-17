@@ -8,6 +8,24 @@ import { randomUUID } from "node:crypto";
  * Video generation pipeline — 3 tiers.
  */
 
+/** Apply modifications to a Creatomate source JSON by matching element names */
+function applyModifications(source: Record<string, unknown>, mods: Record<string, string>): Record<string, unknown> {
+  const result = JSON.parse(JSON.stringify(source)) as Record<string, unknown>;
+  const elements = result.elements as Array<Record<string, unknown>> | undefined;
+  if (!elements) return result;
+  for (const el of elements) {
+    const name = el.name as string | undefined;
+    if (name && name in mods) {
+      if (el.type === "image") {
+        el.source = mods[name];
+      } else if (el.type === "text") {
+        el.text = mods[name];
+      }
+    }
+  }
+  return result;
+}
+
 /** Tier 1: Template video via Creatomate (~50% of video volume) */
 export async function generateTemplateVideos(
   agent: AdsAgent,
@@ -28,19 +46,23 @@ export async function generateTemplateVideos(
     const creativeId = randomUUID();
 
     try {
-      const result = await agent.creatomate.renderVideo({
-        templateId: (template as unknown as { provider_template_id: string }).provider_template_id,
-        modifications: {
-          "product-image-1": product.images[0] ?? "",
-          "product-image-2": product.images[1] ?? product.images[0] ?? "",
-          "product-image-3": product.images[2] ?? product.images[0] ?? "",
-          headline: brief.headlines[0] ?? product.title,
-          description: brief.descriptions[0] ?? "",
-          cta: brief.ctas[0] ?? "Shop Now",
-          price: `€${product.price}`,
-          ...(product.discount_percent && { discount: `-${product.discount_percent}%` }),
-        },
-      });
+      const tpl = template as unknown as { provider_template_id: string; config?: Record<string, unknown> };
+      const modifications: Record<string, string> = {
+        "product-image-1": product.images[0] ?? "",
+        "product-image-2": product.images[1] ?? product.images[0] ?? "",
+        "product-image-3": product.images[2] ?? product.images[0] ?? "",
+        headline: brief.headlines[0] ?? product.title,
+        description: brief.descriptions[0] ?? "",
+        cta: brief.ctas[0] ?? "Shop Now",
+        price: `€${product.price}`,
+        ...(product.discount_percent && { discount: `-${product.discount_percent}%` }),
+      };
+
+      const result = await agent.creatomate.renderVideo(
+        tpl.provider_template_id === "source" && tpl.config
+          ? { source: applyModifications(tpl.config, modifications) }
+          : { templateId: tpl.provider_template_id, modifications },
+      );
 
       const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "mp4");
       const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "video/mp4");

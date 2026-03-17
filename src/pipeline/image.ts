@@ -8,6 +8,24 @@ import { randomUUID } from "node:crypto";
  * Image generation pipeline — 3 tiers for scale + creativity balance.
  */
 
+/** Apply modifications to a Creatomate source JSON by matching element names */
+function applyModifications(source: Record<string, unknown>, mods: Record<string, string>): Record<string, unknown> {
+  const result = JSON.parse(JSON.stringify(source)) as Record<string, unknown>;
+  const elements = result.elements as Array<Record<string, unknown>> | undefined;
+  if (!elements) return result;
+  for (const el of elements) {
+    const name = el.name as string | undefined;
+    if (name && name in mods) {
+      if (el.type === "image") {
+        el.source = mods[name];
+      } else if (el.type === "text") {
+        el.text = mods[name];
+      }
+    }
+  }
+  return result;
+}
+
 /** Tier 1: Template-based images via Creatomate (~60% volume) */
 export async function generateTemplateImages(
   agent: AdsAgent,
@@ -32,17 +50,20 @@ export async function generateTemplateImages(
       const creativeId = randomUUID();
 
       try {
-        const result = await agent.creatomate.renderImage({
-          templateId: template.provider_template_id,
-          modifications: {
-            "product-image": product.images[0] ?? "",
-            headline,
-            cta,
-            price: `€${product.price}`,
-            ...(product.compare_at_price && { "original-price": `€${product.compare_at_price}` }),
-            ...(product.discount_percent && { discount: `-${product.discount_percent}%` }),
-          },
-        });
+        const modifications: Record<string, string> = {
+          "product-image": product.images[0] ?? "",
+          headline,
+          cta,
+          price: `€${product.price}`,
+          ...(product.compare_at_price && { "original-price": `€${product.compare_at_price}` }),
+          ...(product.discount_percent && { discount: `-${product.discount_percent}%` }),
+        };
+
+        const result = await agent.creatomate.renderImage(
+          template.provider_template_id === "source" && template.config
+            ? { source: applyModifications(template.config as Record<string, unknown>, modifications) }
+            : { templateId: template.provider_template_id, modifications },
+        );
 
         // Upload to asset storage
         const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "jpg");
