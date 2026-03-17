@@ -56,7 +56,7 @@ export async function generateCreativesForProduct(
     if (tiers.includes("premium") && product.priority === "hero") {
       // Use best AI image as source for AI video
       const bestImage = images.find((i) => i.tier === "ai-enhanced" || i.tier === "premium");
-      videos.push(...await generateAIVideos(agent, product, brief, bestImage?.r2_url));
+      videos.push(...await generateAIVideos(agent, product, brief, bestImage?.asset_url));
     }
   }
 

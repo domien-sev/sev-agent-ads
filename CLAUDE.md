@@ -15,7 +15,7 @@ You are the **Ads Agent** — you generate ad creatives and manage campaigns acr
 2. **3 quality tiers** — Template (bulk, auto-approved), AI-enhanced (needs review), Premium (hero products only)
 3. **Review gate** — Tier 1 auto-approved, Tier 2-3 → `#ads-review` for human approval
 4. **Campaign approval** — Always post campaign summary to `#ads-review` before publishing
-5. **R2 for assets** — All images/videos stored in Cloudflare R2, Directus stores metadata + URLs
+5. **S3 for assets** — All images/videos stored in S3-compatible storage (Hetzner Object Storage), Directus stores metadata + URLs
 6. **Performance loop** — Feed performance data back into brief generation
 7. **Delegate when appropriate:**
    - Product data/translation → `shopify` agent
@@ -78,7 +78,7 @@ See `.env.example` for the full list. Key ones:
 - Creative: `CREATOMATE_API_KEY`, `FLUX_API_KEY`, `RECRAFT_API_KEY`, `PHOTOROOM_API_KEY`
 - Video: `CREATIFY_API_KEY`, `HEYGEN_API_KEY`, `RUNWAY_API_KEY`
 - Platforms: `META_*`, `GOOGLE_ADS_*`, `TIKTOK_*`, `PINTEREST_*`
-- Storage: `R2_*`
+- Storage: `S3_*` (S3-compatible: Hetzner Object Storage, R2, AWS S3)
 
 ## Endpoints
 

@@ -1,6 +1,6 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord, AdBriefRecord, AdCreativeRecord } from "@domien-sev/shared-types";
-import { R2Storage } from "@domien-sev/creative-sdk";
+import { AssetStorage } from "@domien-sev/creative-sdk";
 import { createItem, readItems } from "@directus/sdk";
 import { randomUUID } from "node:crypto";
 
@@ -42,8 +42,8 @@ export async function generateTemplateVideos(
         },
       });
 
-      const r2Key = R2Storage.creativeKey(product.id!, creativeId, "mp4");
-      const uploaded = await agent.r2.uploadFromUrl(result.url, r2Key, "video/mp4");
+      const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "mp4");
+      const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "video/mp4");
 
       const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
         brief_id: brief.id!,
@@ -52,8 +52,8 @@ export async function generateTemplateVideos(
         type: "video",
         tier: "template",
         provider: "creatomate",
-        r2_url: uploaded.url,
-        r2_key: uploaded.key,
+        asset_url: uploaded.url,
+        asset_key: uploaded.key,
         thumbnail_url: null,
         width: result.width,
         height: result.height,
@@ -107,8 +107,8 @@ export async function generateProductVideos(
       aspectRatio: "9:16",
     });
 
-    const r2Key = R2Storage.creativeKey(product.id!, creativeId, "mp4");
-    const uploaded = await agent.r2.uploadFromUrl(result.url, r2Key, "video/mp4");
+    const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "mp4");
+    const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "video/mp4");
 
     const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
       brief_id: brief.id!,
@@ -117,8 +117,8 @@ export async function generateProductVideos(
       type: "video",
       tier: "ai-enhanced",
       provider: "creatify",
-      r2_url: uploaded.url,
-      r2_key: uploaded.key,
+      asset_url: uploaded.url,
+      asset_key: uploaded.key,
       thumbnail_url: null,
       width: result.width,
       height: result.height,
@@ -176,8 +176,8 @@ export async function generateAIVideos(
       duration: 5,
     });
 
-    const r2Key = R2Storage.creativeKey(product.id!, creativeId, "mp4");
-    const uploaded = await agent.r2.uploadFromUrl(result.url, r2Key, "video/mp4");
+    const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "mp4");
+    const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "video/mp4");
 
     const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
       brief_id: brief.id!,
@@ -186,8 +186,8 @@ export async function generateAIVideos(
       type: "video",
       tier: "premium",
       provider: "runway",
-      r2_url: uploaded.url,
-      r2_key: uploaded.key,
+      asset_url: uploaded.url,
+      asset_key: uploaded.key,
       thumbnail_url: null,
       width: result.width,
       height: result.height,

@@ -1,6 +1,6 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord, AdBriefRecord, AdCreativeRecord, AdTemplateRecord } from "@domien-sev/shared-types";
-import { R2Storage } from "@domien-sev/creative-sdk";
+import { AssetStorage } from "@domien-sev/creative-sdk";
 import { createItem, readItems } from "@directus/sdk";
 import { randomUUID } from "node:crypto";
 
@@ -44,9 +44,9 @@ export async function generateTemplateImages(
           },
         });
 
-        // Upload to R2
-        const r2Key = R2Storage.creativeKey(product.id!, creativeId, "jpg");
-        const uploaded = await agent.r2.uploadFromUrl(result.url, r2Key, "image/jpeg");
+        // Upload to asset storage
+        const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "jpg");
+        const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "image/jpeg");
 
         const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
           brief_id: brief.id!,
@@ -55,8 +55,8 @@ export async function generateTemplateImages(
           type: "image",
           tier: "template",
           provider: "creatomate",
-          r2_url: uploaded.url,
-          r2_key: uploaded.key,
+          asset_url: uploaded.url,
+          asset_key: uploaded.key,
           thumbnail_url: null,
           width: result.width,
           height: result.height,
@@ -126,8 +126,8 @@ export async function generateAIImages(
         referenceImages: cleanProductUrl ? [cleanProductUrl] : undefined,
       });
 
-      const r2Key = R2Storage.creativeKey(product.id!, creativeId, "png");
-      const uploaded = await agent.r2.uploadFromUrl(result.url, r2Key, "image/png");
+      const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "png");
+      const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "image/png");
 
       const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
         brief_id: brief.id!,
@@ -136,8 +136,8 @@ export async function generateAIImages(
         type: "image",
         tier: "ai-enhanced",
         provider: "flux",
-        r2_url: uploaded.url,
-        r2_key: uploaded.key,
+        asset_url: uploaded.url,
+        asset_key: uploaded.key,
         thumbnail_url: null,
         width: result.width,
         height: result.height,
@@ -189,8 +189,8 @@ export async function generatePremiumImages(
       height: 1080,
     });
 
-    const r2Key = R2Storage.creativeKey(product.id!, creativeId, "png");
-    const uploaded = await agent.r2.uploadFromUrl(result.url, r2Key, "image/png");
+    const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "png");
+    const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "image/png");
 
     const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
       brief_id: brief.id!,
@@ -199,8 +199,8 @@ export async function generatePremiumImages(
       type: "image",
       tier: "premium",
       provider,
-      r2_url: uploaded.url,
-      r2_key: uploaded.key,
+      asset_url: uploaded.url,
+      asset_key: uploaded.key,
       thumbnail_url: null,
       width: result.width,
       height: result.height,

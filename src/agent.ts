@@ -2,7 +2,7 @@ import { BaseAgent } from "@domien-sev/agent-sdk";
 import type { AgentConfig } from "@domien-sev/agent-sdk";
 import type { RoutedMessage, AgentResponse } from "@domien-sev/shared-types";
 import { ShopifyAdminClient } from "@domien-sev/shopify-sdk";
-import { CreatomateClient, ImageGenerator, VideoGenerator, BackgroundRemover, R2Storage } from "@domien-sev/creative-sdk";
+import { CreatomateClient, ImageGenerator, VideoGenerator, BackgroundRemover, AssetStorage } from "@domien-sev/creative-sdk";
 import { MetaAdsClient, GoogleAdsClient, TikTokAdsClient, PinterestAdsClient, PerformanceCollector } from "@domien-sev/ads-sdk";
 
 import { handleGenerate } from "./handlers/generate.js";
@@ -16,7 +16,7 @@ export class AdsAgent extends BaseAgent {
   public imageGenerator!: ImageGenerator;
   public videoGenerator!: VideoGenerator;
   public bgRemover!: BackgroundRemover;
-  public r2!: R2Storage;
+  public storage!: AssetStorage;
   public performanceCollector!: PerformanceCollector;
   public metaAds?: MetaAdsClient;
   public googleAds?: GoogleAdsClient;
@@ -57,13 +57,15 @@ export class AdsAgent extends BaseAgent {
       this.bgRemover = new BackgroundRemover({ apiKey: process.env.PHOTOROOM_API_KEY });
     }
 
-    // Initialize R2 storage
-    this.r2 = new R2Storage({
-      accountId: process.env.R2_ACCOUNT_ID ?? "",
-      accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
-      bucket: process.env.R2_BUCKET ?? "sev-ads-creatives",
-      publicUrl: process.env.R2_PUBLIC_URL,
+    // Initialize S3-compatible asset storage (Hetzner Object Storage, R2, etc.)
+    this.storage = new AssetStorage({
+      endpoint: process.env.S3_ENDPOINT ?? "",
+      accessKeyId: process.env.S3_ACCESS_KEY_ID ?? "",
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? "",
+      bucket: process.env.S3_BUCKET ?? "sev-ads-creatives",
+      publicUrl: process.env.S3_PUBLIC_URL,
+      region: process.env.S3_REGION,
+      forcePathStyle: process.env.S3_FORCE_PATH_STYLE !== "false",
     });
 
     // Initialize ad platform clients
