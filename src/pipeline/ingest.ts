@@ -54,7 +54,7 @@ export async function syncProducts(agent: AdsAgent, options?: { limit?: number }
 
   const products: AdProductRecord[] = [];
 
-  for (const edge of shopifyProducts.data?.products?.edges ?? []) {
+  for (const edge of shopifyProducts.products?.edges ?? []) {
     const node = edge.node;
     const shopifyId = node.id.replace("gid://shopify/Product/", "");
 
