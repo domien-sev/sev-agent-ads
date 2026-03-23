@@ -15,7 +15,7 @@ export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): P
   const text = message.text.trim();
 
   // Parse product reference from message
-  const productQuery = text
+  let productQuery = text
     .replace(/^(generate|create|make)\s*(ads?|creatives?)?\s*(for)?\s*/i, "")
     .trim();
 
@@ -23,8 +23,14 @@ export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): P
     return {
       channel_id: message.channel_id,
       thread_ts: message.thread_ts ?? message.ts,
-      text: "What should I generate ads for? Try: `generate ads for [product name or handle]`",
+      text: "What should I generate ads for? Try: `generate ads for [product name, brand, or Shopify URL]`",
     };
+  }
+
+  // Extract handle from Shopify URL if provided
+  const urlMatch = productQuery.match(/\/products\/([a-z0-9-]+)/i);
+  if (urlMatch) {
+    productQuery = urlMatch[1];
   }
 
   // Step 1: Find or sync product
@@ -35,6 +41,9 @@ export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): P
         _or: [
           { title: { _icontains: productQuery } },
           { handle: { _icontains: productQuery } },
+          { brand: { _icontains: productQuery } },
+          { vendor: { _icontains: productQuery } },
+          { tags: { _icontains: productQuery } },
         ],
       },
       limit: 5,
@@ -43,11 +52,15 @@ export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): P
 
   if (products.length === 0) {
     // Try syncing from Shopify first
-    const synced = await syncProducts(agent, { limit: 20 });
+    const synced = await syncProducts(agent, { limit: 50 });
+    const q = productQuery.toLowerCase();
     products = synced.filter(
       (p) =>
-        p.title.toLowerCase().includes(productQuery.toLowerCase()) ||
-        p.handle.includes(productQuery.toLowerCase()),
+        p.title.toLowerCase().includes(q) ||
+        p.handle.includes(q) ||
+        (p.brand ?? "").toLowerCase().includes(q) ||
+        (p.vendor ?? "").toLowerCase().includes(q) ||
+        p.tags.some((t) => t.toLowerCase().includes(q)),
     );
   }
 
