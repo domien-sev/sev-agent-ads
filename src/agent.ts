@@ -30,11 +30,19 @@ export class AdsAgent extends BaseAgent {
   async onStart(): Promise<void> {
     this.logger.info("Initializing ads agent...");
 
-    // Initialize Shopify client
-    this.shopifyClient = new ShopifyAdminClient({
-      shop: process.env.SHOPIFY_SHOP ?? "",
-      accessToken: process.env.SHOPIFY_ACCESS_TOKEN ?? "",
-    });
+    // Initialize Shopify client (prefer client credentials for auto-refresh)
+    if (process.env.SHOPIFY_CLIENT_ID && process.env.SHOPIFY_CLIENT_SECRET) {
+      this.shopifyClient = new ShopifyAdminClient({
+        shop: process.env.SHOPIFY_SHOP ?? "",
+        clientId: process.env.SHOPIFY_CLIENT_ID,
+        clientSecret: process.env.SHOPIFY_CLIENT_SECRET,
+      });
+    } else {
+      this.shopifyClient = new ShopifyAdminClient({
+        shop: process.env.SHOPIFY_SHOP ?? "",
+        accessToken: process.env.SHOPIFY_ACCESS_TOKEN ?? "",
+      });
+    }
 
     // Initialize creative generation
     if (process.env.CREATOMATE_API_KEY) {
