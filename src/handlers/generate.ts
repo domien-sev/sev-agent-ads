@@ -7,53 +7,32 @@ import { generateTemplateVideos, generateProductVideos } from "../pipeline/video
 import { processReviewQueue, buildReviewSlackMessage } from "../pipeline/review.js";
 import { getClient, readItems } from "../lib/directus.js";
 
+const PAGE_SIZE = 10;
+
 /**
- * Handler for "generate ads for [product]" commands.
- * Full pipeline: sync → brief → images (3 tiers) → videos → review.
+ * Search for products by query (title, handle, brand, vendor, tags).
+ * Returns ALL matches (no limit) so we can paginate in-memory.
  */
-export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): Promise<AgentResponse> {
-  const text = message.text.trim();
-
-  // Parse product reference from message
-  let productQuery = text
-    .replace(/^(generate|create|make)\s*(ads?|creatives?)?\s*(for)?\s*/i, "")
-    .trim();
-
-  if (!productQuery) {
-    return {
-      channel_id: message.channel_id,
-      thread_ts: message.thread_ts ?? message.ts,
-      text: "What should I generate ads for? Try: `generate ads for [product name, brand, or Shopify URL]`",
-    };
-  }
-
-  // Extract handle from Shopify URL if provided
-  const urlMatch = productQuery.match(/\/products\/([a-z0-9-]+)/i);
-  if (urlMatch) {
-    productQuery = urlMatch[1];
-  }
-
-  // Step 1: Find or sync product
+async function findProducts(agent: AdsAgent, query: string) {
   const client = getClient(agent);
   let products = await client.request(
     readItems("ad_products", {
       filter: {
         _or: [
-          { title: { _icontains: productQuery } },
-          { handle: { _icontains: productQuery } },
-          { brand: { _icontains: productQuery } },
-          { vendor: { _icontains: productQuery } },
-          { tags: { _icontains: productQuery } },
+          { title: { _icontains: query } },
+          { handle: { _icontains: query } },
+          { brand: { _icontains: query } },
+          { vendor: { _icontains: query } },
+          { tags: { _icontains: query } },
         ],
       },
-      limit: 5,
+      limit: 100,
     }),
   );
 
   if (products.length === 0) {
-    // Try syncing from Shopify first
     const synced = await syncProducts(agent, { limit: 50 });
-    const q = productQuery.toLowerCase();
+    const q = query.toLowerCase();
     products = synced.filter(
       (p) =>
         p.title.toLowerCase().includes(q) ||
@@ -64,32 +43,96 @@ export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): P
     );
   }
 
-  if (products.length === 0) {
+  return products;
+}
+
+/**
+ * Handler for "generate ads for [product]" and "generate more" commands.
+ */
+export async function handleGenerate(
+  agent: AdsAgent,
+  message: RoutedMessage,
+  continueFromLast = false,
+): Promise<AgentResponse> {
+  const text = message.text.trim();
+  let productQuery: string;
+  let offset: number;
+
+  if (continueFromLast) {
+    if (!agent.lastQuery) {
+      return {
+        channel_id: message.channel_id,
+        thread_ts: message.thread_ts ?? message.ts,
+        text: "No previous search to continue. Try: `generate ads for [product name or brand]`",
+      };
+    }
+    productQuery = agent.lastQuery;
+    offset = agent.lastOffset;
+  } else {
+    productQuery = text
+      .replace(/^(generate|create|make)\s*(ads?|creatives?)?\s*(for)?\s*/i, "")
+      .trim();
+
+    if (!productQuery) {
+      return {
+        channel_id: message.channel_id,
+        thread_ts: message.thread_ts ?? message.ts,
+        text: "What should I generate ads for? Try: `generate ads for [product name, brand, or Shopify URL]`",
+      };
+    }
+
+    // Extract handle from Shopify URL if provided
+    const urlMatch = productQuery.match(/\/products\/([a-z0-9-]+)/i);
+    if (urlMatch) {
+      productQuery = urlMatch[1];
+    }
+
+    offset = 0;
+  }
+
+  // Find all matching products
+  const allProducts = await findProducts(agent, productQuery);
+
+  if (allProducts.length === 0) {
     return {
       channel_id: message.channel_id,
       thread_ts: message.thread_ts ?? message.ts,
-      text: `No products found matching "${productQuery}". Try syncing first or use a different search term.`,
+      text: `No products found matching "${productQuery}". Try a different search term.`,
     };
   }
 
-  // Step 2: Generate for each matched product
+  // Paginate
+  const page = allProducts.slice(offset, offset + PAGE_SIZE);
+
+  if (page.length === 0) {
+    agent.lastQuery = "";
+    agent.lastOffset = 0;
+    agent.lastTotalMatches = 0;
+    return {
+      channel_id: message.channel_id,
+      thread_ts: message.thread_ts ?? message.ts,
+      text: `No more products to process for "${productQuery}". All ${allProducts.length} have been covered.`,
+    };
+  }
+
+  // Save pagination state
+  agent.lastQuery = productQuery;
+  agent.lastOffset = offset + page.length;
+  agent.lastTotalMatches = allProducts.length;
+
+  // Generate for this page
   const results: string[] = [];
   let totalCreatives = 0;
 
-  for (const product of products) {
-    // Brief generation
+  for (const product of page) {
     const brief = await generateBrief(agent, product);
 
-    // Image generation (all tiers)
     const templateImages = await generateTemplateImages(agent, product, brief);
     const aiImages = await generateAIImages(agent, product, brief);
-
-    // Only generate premium for hero products
     const premiumImages = product.priority === "hero"
       ? await generatePremiumImages(agent, product, brief)
       : [];
 
-    // Video generation
     const templateVideos = await generateTemplateVideos(agent, product, brief);
     const productVideos = await generateProductVideos(agent, product, brief);
 
@@ -100,21 +143,27 @@ export async function handleGenerate(agent: AdsAgent, message: RoutedMessage): P
     results.push(`*${product.title}:* ${count} creatives (${templateImages.length} template img, ${aiImages.length} AI img, ${premiumImages.length} premium img, ${templateVideos.length} template vid, ${productVideos.length} product vid)`);
   }
 
-  // Step 3: Process review queue
+  // Review queue
   const review = await processReviewQueue(agent);
   const reviewMsg = buildReviewSlackMessage(review.creatives.filter((c) => c.status === "review"));
+
+  const remaining = allProducts.length - agent.lastOffset;
+  const paginationMsg = remaining > 0
+    ? `\n_${remaining} more product(s) matching "${productQuery}" — type \`generate more\` to continue._`
+    : "";
 
   return {
     channel_id: message.channel_id,
     thread_ts: message.thread_ts ?? message.ts,
     text: [
-      `Generated ${totalCreatives} creatives for ${products.length} product(s):`,
+      `Generated ${totalCreatives} creatives for ${page.length} of ${allProducts.length} product(s) (batch ${Math.ceil(offset / PAGE_SIZE) + 1}):`,
       "",
       ...results,
       "",
       `*Review:* ${review.approved} auto-approved, ${review.flagged} need manual review.`,
       "",
       reviewMsg,
+      paginationMsg,
     ].join("\n"),
   };
 }

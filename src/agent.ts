@@ -23,6 +23,11 @@ export class AdsAgent extends BaseAgent {
   public tiktokAds?: TikTokAdsClient;
   public pinterestAds?: PinterestAdsClient;
 
+  /** Pagination state for "generate more" */
+  public lastQuery: string = "";
+  public lastOffset: number = 0;
+  public lastTotalMatches: number = 0;
+
   constructor(config: AgentConfig) {
     super(config);
   }
@@ -127,6 +132,10 @@ export class AdsAgent extends BaseAgent {
 
     try {
       // Route to handlers based on command keywords
+      if (text === "generate more" || text === "more") {
+        return handleGenerate(this, message, true);
+      }
+
       if (text.startsWith("generate") || text.startsWith("create ads") || text.startsWith("make ads")) {
         return handleGenerate(this, message);
       }
@@ -167,7 +176,8 @@ export class AdsAgent extends BaseAgent {
       text: [
         "*Ad Agent Commands:*",
         "",
-        "`generate ads for [product/collection]` — Generate creatives for products",
+        "`generate ads for [product/brand/URL]` — Generate creatives (first 10 matches)",
+        "`generate more` — Continue with the next 10 products from the last search",
         "`create campaign [name] on [platform]` — Set up a new ad campaign",
         "`report [daily/weekly]` — Performance summary",
         "`performance [campaign name]` — Detailed campaign metrics",
