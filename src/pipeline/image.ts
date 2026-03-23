@@ -1,7 +1,7 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord, AdBriefRecord, AdCreativeRecord, AdTemplateRecord } from "@domien-sev/shared-types";
 import { AssetStorage } from "@domien-sev/creative-sdk";
-import { getClient, createItem, readItems } from "../lib/directus.js";
+import { getClient, createItem, readItems, importFileFromUrl } from "../lib/directus.js";
 import { randomUUID } from "node:crypto";
 
 /**
@@ -68,6 +68,9 @@ export async function generateTemplateImages(
         const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "jpg");
         const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "image/jpeg");
 
+        // Import into Directus Files for preview
+        const previewId = await importFileFromUrl(uploaded.url, `${product.title} - ${headline}`);
+
         const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
           brief_id: brief.id!,
           product_id: product.id!,
@@ -78,6 +81,7 @@ export async function generateTemplateImages(
           asset_url: uploaded.url,
           asset_key: uploaded.key,
           thumbnail_url: null,
+          preview: previewId,
           width: result.width,
           height: result.height,
           duration_seconds: null,
@@ -149,6 +153,8 @@ export async function generateAIImages(
       const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "png");
       const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "image/png");
 
+      const previewId = await importFileFromUrl(uploaded.url, `${product.title} - AI ${i}`);
+
       const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
         brief_id: brief.id!,
         product_id: product.id!,
@@ -159,6 +165,7 @@ export async function generateAIImages(
         asset_url: uploaded.url,
         asset_key: uploaded.key,
         thumbnail_url: null,
+        preview: previewId,
         width: result.width,
         height: result.height,
         duration_seconds: null,
@@ -212,6 +219,8 @@ export async function generatePremiumImages(
     const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "png");
     const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "image/png");
 
+    const previewId = await importFileFromUrl(uploaded.url, `${product.title} - Premium`);
+
     const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
       brief_id: brief.id!,
       product_id: product.id!,
@@ -222,6 +231,7 @@ export async function generatePremiumImages(
       asset_url: uploaded.url,
       asset_key: uploaded.key,
       thumbnail_url: null,
+      preview: previewId,
       width: result.width,
       height: result.height,
       duration_seconds: null,

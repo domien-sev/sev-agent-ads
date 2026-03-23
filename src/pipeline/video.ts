@@ -1,7 +1,7 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord, AdBriefRecord, AdCreativeRecord } from "@domien-sev/shared-types";
 import { AssetStorage } from "@domien-sev/creative-sdk";
-import { getClient, createItem, readItems } from "../lib/directus.js";
+import { getClient, createItem, readItems, importFileFromUrl } from "../lib/directus.js";
 import { randomUUID } from "node:crypto";
 
 /**
@@ -66,6 +66,8 @@ export async function generateTemplateVideos(
       const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "mp4");
       const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "video/mp4");
 
+      const previewId = await importFileFromUrl(uploaded.url, `${product.title} - Video`);
+
       const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
         brief_id: brief.id!,
         product_id: product.id!,
@@ -76,6 +78,7 @@ export async function generateTemplateVideos(
         asset_url: uploaded.url,
         asset_key: uploaded.key,
         thumbnail_url: null,
+        preview: previewId,
         width: result.width,
         height: result.height,
         duration_seconds: result.duration,
@@ -131,6 +134,8 @@ export async function generateProductVideos(
     const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "mp4");
     const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "video/mp4");
 
+    const previewId = await importFileFromUrl(uploaded.url, `${product.title} - Product Video`);
+
     const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
       brief_id: brief.id!,
       product_id: product.id!,
@@ -141,6 +146,7 @@ export async function generateProductVideos(
       asset_url: uploaded.url,
       asset_key: uploaded.key,
       thumbnail_url: null,
+      preview: previewId,
       width: result.width,
       height: result.height,
       duration_seconds: result.duration,
@@ -200,6 +206,8 @@ export async function generateAIVideos(
     const assetKey = AssetStorage.creativeKey(product.id!, creativeId, "mp4");
     const uploaded = await agent.storage.uploadFromUrl(result.url, assetKey, "video/mp4");
 
+    const previewId = await importFileFromUrl(uploaded.url, `${product.title} - AI Video`);
+
     const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
       brief_id: brief.id!,
       product_id: product.id!,
@@ -210,6 +218,7 @@ export async function generateAIVideos(
       asset_url: uploaded.url,
       asset_key: uploaded.key,
       thumbnail_url: null,
+      preview: previewId,
       width: result.width,
       height: result.height,
       duration_seconds: result.duration,
