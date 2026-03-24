@@ -8,21 +8,66 @@ import { randomUUID } from "node:crypto";
  * Image generation pipeline — 3 tiers for scale + creativity balance.
  */
 
-/** Apply modifications to a Creatomate source JSON by matching element names */
+/**
+ * Apply modifications to a Creatomate source JSON by matching element names.
+ * Handles: image source, text content, fill colors, font families, background fills.
+ *
+ * Naming convention for elements:
+ *   - Text content:   name matches key → sets `text`
+ *   - Image source:   name matches key → sets `source`
+ *   - Fill color:     name ends with " Fill" or matches a color key (hex value) → sets `fill`
+ *   - Font override:  name ends with " Font" → sets `font_family`
+ *   - Background:     name = "Background" or "Background Color" → sets `fill` on shape
+ */
 function applyModifications(source: Record<string, unknown>, mods: Record<string, string>): Record<string, unknown> {
   const result = JSON.parse(JSON.stringify(source)) as Record<string, unknown>;
   const elements = result.elements as Array<Record<string, unknown>> | undefined;
   if (!elements) return result;
+
   for (const el of elements) {
     const name = el.name as string | undefined;
-    if (name && name in mods) {
-      if (el.type === "image") {
-        el.source = mods[name];
-      } else if (el.type === "text") {
-        el.text = mods[name];
+    if (!name || !(name in mods)) continue;
+
+    const value = mods[name];
+    const isHexColor = /^#[0-9A-Fa-f]{6,8}$/.test(value);
+    const type = el.type as string;
+
+    if (type === "image") {
+      el.source = value;
+    } else if (type === "text") {
+      // Text elements: set content, or override fill/font if value is a color/font name
+      if (isHexColor) {
+        el.fill = value;
+      } else if (name.endsWith(" Font")) {
+        el.font_family = value;
+      } else {
+        el.text = value;
+      }
+    } else if (type === "shape" || type === "rectangle" || type === "ellipse") {
+      // Shape elements: set fill color
+      if (isHexColor) {
+        el.fill = value;
+      }
+    } else if (type === "composition") {
+      // Composition elements: set background fill
+      if (isHexColor) {
+        el.fill = value;
+      }
+    } else {
+      // Fallback: try to set the most appropriate property
+      if (isHexColor) {
+        el.fill = value;
+      } else {
+        el.text = value;
       }
     }
   }
+
+  // Also set top-level background if "Background Color" is in mods
+  if ("Background Color" in mods) {
+    result.fill = mods["Background Color"];
+  }
+
   return result;
 }
 
