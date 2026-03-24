@@ -63,7 +63,13 @@ export class AdsAgent extends BaseAgent {
         },
       }),
       ...(process.env.RECRAFT_API_KEY && { recraft: { apiKey: process.env.RECRAFT_API_KEY } }),
-      ...(process.env.OPENAI_API_KEY && { openai: { apiKey: process.env.OPENAI_API_KEY } }),
+      ...(process.env.OPENAI_IMAGE_API_KEY && {
+        openai: {
+          apiKey: process.env.OPENAI_IMAGE_API_KEY,
+          backend: (process.env.OPENAI_IMAGE_BACKEND as "openai" | "openrouter" | undefined) ?? "openai",
+          model: process.env.OPENAI_IMAGE_MODEL,
+        },
+      }),
     });
 
     this.videoGenerator = new VideoGenerator({
