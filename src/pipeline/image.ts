@@ -1,6 +1,6 @@
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord, AdBriefRecord, AdCreativeRecord, AdTemplateRecord } from "@domien-sev/shared-types";
-import { AssetStorage } from "@domien-sev/creative-sdk";
+import { AssetStorage, SEV_TOKENS, buildTemplateModifications, enrichPromptWithBrand } from "@domien-sev/creative-sdk";
 import { getClient, createItem, readItems, importFileFromUrl } from "../lib/directus.js";
 import { randomUUID } from "node:crypto";
 
@@ -50,6 +50,7 @@ export async function generateTemplateImages(
       const creativeId = randomUUID();
 
       try {
+        const brandMods = buildTemplateModifications(SEV_TOKENS);
         const modifications: Record<string, string> = {
           "product-image": product.images[0] ?? "",
           headline,
@@ -57,6 +58,7 @@ export async function generateTemplateImages(
           price: `€${product.price}`,
           ...(product.compare_at_price && { "original-price": `€${product.compare_at_price}` }),
           ...(product.discount_percent && { discount: `-${product.discount_percent}%` }),
+          ...Object.fromEntries(Object.entries(brandMods).map(([k, v]) => [k, String(v)])),
         };
 
         const renderRequest = template.provider_template_id === "source" && template.config
@@ -133,10 +135,16 @@ export async function generateAIImages(
     }
   }
 
-  // Generate lifestyle scenes with product
+  // Generate lifestyle scenes with product — enriched with brand styling
   const scenes = [
-    `Fashion product photography: ${product.title} on a ${cd.mood} ${cd.style} background, professional studio lighting, ${product.color ?? "neutral"} tones`,
-    `E-commerce lifestyle shot: ${product.title} in an aspirational setting, ${cd.mood} atmosphere, clean composition`,
+    enrichPromptWithBrand(
+      `Fashion product photography: ${product.title} on a ${cd.mood} ${cd.style} background, professional studio lighting, ${product.color ?? "neutral"} tones`,
+      SEV_TOKENS,
+    ),
+    enrichPromptWithBrand(
+      `E-commerce lifestyle shot: ${product.title} in an aspirational setting, ${cd.mood} atmosphere, clean composition`,
+      SEV_TOKENS,
+    ),
   ];
 
   for (let i = 0; i < scenes.length; i++) {
@@ -210,8 +218,9 @@ export async function generatePremiumImages(
   const discount = product.discount_percent ? `-${product.discount_percent}%` : "";
 
   try {
+    const brandPalette = [SEV_TOKENS.colors.primary, SEV_TOKENS.colors.text, SEV_TOKENS.colors.background, ...brief.creative_direction.color_palette.slice(0, 2)];
     const result = await agent.imageGenerator.generate(provider, {
-      prompt: `Fashion sale banner: "${product.title}" ${discount} — bold typography, ${brief.creative_direction.style} style, colors: ${brief.creative_direction.color_palette.join(", ")}. Price €${product.price} prominently displayed. Clean, professional ad design.`,
+      prompt: `Fashion sale banner for Shopping Event VIP: "${product.title}" ${discount} — bold ${SEV_TOKENS.fonts.heading} typography, ${brief.creative_direction.style} style, colors: ${brandPalette.join(", ")}. Price €${product.price} prominently displayed. Clean, elegant, warm-toned ad design.`,
       width: 1080,
       height: 1080,
     });

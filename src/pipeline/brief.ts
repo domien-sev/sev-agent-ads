@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { AdsAgent } from "../agent.js";
 import type { AdProductRecord, AdBriefRecord } from "@domien-sev/shared-types";
 import { getClient, createItem } from "../lib/directus.js";
+import { SEV_TOKENS } from "@domien-sev/creative-sdk";
 
 const anthropic = new Anthropic();
 
@@ -66,7 +67,21 @@ function buildBriefPrompt(product: AdProductRecord): string {
     ? `${product.discount_percent}% OFF (was €${product.compare_at_price}, now €${product.price})`
     : `€${product.price}`;
 
-  return `You are an expert fashion ad copywriter for a discount fashion outlet.
+  const brandColors = [
+    SEV_TOKENS.colors.primary,
+    SEV_TOKENS.colors.text,
+    SEV_TOKENS.colors.background,
+    SEV_TOKENS.colors.surface,
+  ];
+
+  return `You are an expert fashion ad copywriter for Shopping Event VIP, a premium discount fashion outlet.
+
+**Brand Identity:**
+- Primary color: ${SEV_TOKENS.colors.primary} (warm taupe)
+- Text: ${SEV_TOKENS.colors.text} (near-black)
+- Background: ${SEV_TOKENS.colors.background} (white) / Surface: ${SEV_TOKENS.colors.surface} (warm off-white)
+- Fonts: ${SEV_TOKENS.fonts.heading} for headings, ${SEV_TOKENS.fonts.body} for body
+- Style: Elegant, understated luxury, clean minimal layouts
 
 Generate ad creative assets for this product:
 
@@ -85,9 +100,9 @@ Respond in this exact JSON format:
   "descriptions": ["3 descriptions, max 125 chars each, highlight the deal"],
   "ctas": ["3 call-to-action options"],
   "creative_direction": {
-    "mood": "the overall feeling",
-    "style": "visual style direction",
-    "color_palette": ["3-4 hex colors that match the product"],
+    "mood": "the overall feeling — align with SEV brand (elegant, warm, premium)",
+    "style": "visual style direction — clean, minimal, warm tones",
+    "color_palette": ["3-4 hex colors — MUST include ${brandColors[0]} as primary, plus product-complementary colors"],
     "layout": "suggested layout approach",
     "notes": "any additional creative notes"
   },
