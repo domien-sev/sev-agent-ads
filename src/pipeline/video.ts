@@ -68,7 +68,7 @@ export async function generateTemplateVideos(
 
       const previewId = await importFileFromUrl(uploaded.url, `${product.title} - Video`);
 
-      const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
+      const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> & Record<string, unknown> = {
         brief_id: brief.id!,
         product_id: product.id!,
         campaign_id: brief.campaign_id,
@@ -136,7 +136,7 @@ export async function generateProductVideos(
 
     const previewId = await importFileFromUrl(uploaded.url, `${product.title} - Product Video`);
 
-    const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
+    const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> & Record<string, unknown> = {
       brief_id: brief.id!,
       product_id: product.id!,
       campaign_id: brief.campaign_id,
@@ -208,7 +208,7 @@ export async function generateAIVideos(
 
     const previewId = await importFileFromUrl(uploaded.url, `${product.title} - AI Video`);
 
-    const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
+    const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> & Record<string, unknown> = {
       brief_id: brief.id!,
       product_id: product.id!,
       campaign_id: brief.campaign_id,

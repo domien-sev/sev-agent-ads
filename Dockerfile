@@ -1,6 +1,6 @@
 FROM node:22-alpine AS builder
 
-ARG GITHUB_TOKEN
+ARG GH_PKG_TOKEN
 
 WORKDIR /app
 COPY package.json .npmrc ./
@@ -12,7 +12,7 @@ RUN npm run build
 
 FROM node:22-alpine
 
-ARG GITHUB_TOKEN
+ARG GH_PKG_TOKEN
 
 WORKDIR /app
 COPY package.json .npmrc ./

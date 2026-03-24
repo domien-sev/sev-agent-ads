@@ -96,3 +96,12 @@ See `.env.example` for the full list. Key ones:
 - `optimize` — Run optimization rules
 - `pause [campaign]` — Pause a campaign
 - `help` — Show available commands
+
+## GitHub Packages
+
+This agent uses `@domien-sev/*` packages from GitHub Packages.
+- `.npmrc` uses `GH_PKG_TOKEN` env var for auth (NOT `GITHUB_TOKEN` — Coolify overrides that)
+- Dockerfile uses `ARG GH_PKG_TOKEN` for Docker builds
+- In Coolify, `GH_PKG_TOKEN` must be set as an env var
+- See `sev-ai-core/CLAUDE.md` for full GitHub setup details
+
