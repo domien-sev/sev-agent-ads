@@ -55,7 +55,13 @@ export class AdsAgent extends BaseAgent {
     }
 
     this.imageGenerator = new ImageGenerator({
-      ...(process.env.FLUX_API_KEY && { flux: { apiKey: process.env.FLUX_API_KEY } }),
+      ...(process.env.FLUX_API_KEY && {
+        flux: {
+          apiKey: process.env.FLUX_API_KEY,
+          backend: (process.env.FLUX_BACKEND as "bfl" | "openrouter" | undefined) ?? "bfl",
+          model: process.env.FLUX_MODEL,
+        },
+      }),
       ...(process.env.RECRAFT_API_KEY && { recraft: { apiKey: process.env.RECRAFT_API_KEY } }),
       ...(process.env.OPENAI_API_KEY && { openai: { apiKey: process.env.OPENAI_API_KEY } }),
     });
