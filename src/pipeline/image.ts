@@ -118,7 +118,7 @@ export async function generateTemplateImages(
         // Import into Directus Files for preview
         const previewId = await importFileFromUrl(uploaded.url, `${product.title} - ${headline}`);
 
-        const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> & Record<string, unknown> = {
+        const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
           brief_id: brief.id!,
           product_id: product.id!,
           campaign_id: brief.campaign_id,
@@ -208,7 +208,7 @@ export async function generateAIImages(
 
       const previewId = await importFileFromUrl(uploaded.url, `${product.title} - AI ${i}`);
 
-      const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> & Record<string, unknown> = {
+      const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
         brief_id: brief.id!,
         product_id: product.id!,
         campaign_id: brief.campaign_id,
@@ -275,7 +275,7 @@ export async function generatePremiumImages(
 
     const previewId = await importFileFromUrl(uploaded.url, `${product.title} - Premium`);
 
-    const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> & Record<string, unknown> = {
+    const creative: Omit<AdCreativeRecord, "id" | "date_created" | "date_updated"> = {
       brief_id: brief.id!,
       product_id: product.id!,
       campaign_id: brief.campaign_id,
