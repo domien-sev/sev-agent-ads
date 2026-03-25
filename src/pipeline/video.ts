@@ -173,15 +173,15 @@ export async function generateProductVideos(
   return creatives;
 }
 
-/** Tier 3: AI-generated video via Runway (~20% of video volume) */
+/** Tier 3: AI-generated video via Higgsfield (~20% of video volume) */
 export async function generateAIVideos(
   agent: AdsAgent,
   product: AdProductRecord,
   brief: AdBriefRecord,
   sourceImageUrl?: string,
 ): Promise<AdCreativeRecord[]> {
-  if (!agent.videoGenerator.availableProviders.includes("runway")) {
-    agent.log.warn("Runway not configured, skipping AI videos");
+  if (!agent.videoGenerator.availableProviders.includes("higgsfield")) {
+    agent.log.warn("Higgsfield not configured, skipping AI videos");
     return [];
   }
 
@@ -197,7 +197,7 @@ export async function generateAIVideos(
   }
 
   try {
-    const result = await agent.videoGenerator.generate("runway", {
+    const result = await agent.videoGenerator.generate("higgsfield", {
       imageUrl,
       prompt: `Cinematic product reveal of ${product.title}, smooth camera motion, professional lighting`,
       duration: 5,
@@ -214,7 +214,7 @@ export async function generateAIVideos(
       campaign_id: brief.campaign_id,
       type: "video",
       tier: "premium",
-      provider: "runway",
+      provider: "higgsfield",
       asset_url: uploaded.url,
       asset_key: uploaded.key,
       thumbnail_url: null,
@@ -223,11 +223,11 @@ export async function generateAIVideos(
       height: result.height,
       duration_seconds: result.duration,
       format: "mp4",
-      aspect_ratio: "16:9",
+      aspect_ratio: "9:16",
       headline: brief.headlines[0] ?? null,
       description: brief.descriptions[0] ?? null,
       cta: brief.ctas[0] ?? null,
-      platform_target: ["meta", "google", "pinterest"],
+      platform_target: ["meta", "tiktok", "pinterest"],
       status: "review",
       quality_score: null,
       review_notes: null,

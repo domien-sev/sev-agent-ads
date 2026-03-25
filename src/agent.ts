@@ -72,9 +72,14 @@ export class AdsAgent extends BaseAgent {
     });
 
     this.videoGenerator = new VideoGenerator({
-      ...(process.env.CREATIFY_API_KEY && { creatify: { apiKey: process.env.CREATIFY_API_KEY } }),
-      ...(process.env.HEYGEN_API_KEY && { heygen: { apiKey: process.env.HEYGEN_API_KEY } }),
-      ...(process.env.RUNWAY_API_KEY && { runway: { apiKey: process.env.RUNWAY_API_KEY } }),
+      ...(process.env.CREATIFY_API_KEY && { creatify: { apiId: process.env.CREATIFY_API_ID ?? "", apiKey: process.env.CREATIFY_API_KEY } }),
+      ...(process.env.HIGGSFIELD_API_KEY && {
+        higgsfield: {
+          apiKey: process.env.HIGGSFIELD_API_KEY,
+          apiSecret: process.env.HIGGSFIELD_API_SECRET ?? "",
+          defaultModel: process.env.HIGGSFIELD_VIDEO_MODEL,
+        },
+      }),
     });
 
     if (process.env.PHOTOROOM_API_KEY) {

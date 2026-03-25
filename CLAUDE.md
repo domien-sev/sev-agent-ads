@@ -76,7 +76,7 @@ External:
 
 See `.env.example` for the full list. Key ones:
 - Creative: `CREATOMATE_API_KEY`, `FLUX_API_KEY`, `OPENAI_IMAGE_API_KEY`, `PHOTOROOM_API_KEY`
-- Video: `CREATIFY_API_KEY`, `HEYGEN_API_KEY`, `RUNWAY_API_KEY`
+- Video: `CREATIFY_API_ID`, `CREATIFY_API_KEY`, `HIGGSFIELD_API_KEY`, `HIGGSFIELD_API_SECRET`
 - Platforms: `META_*`, `GOOGLE_ADS_*`, `TIKTOK_*`, `PINTEREST_*`
 - Storage: `S3_*` (S3-compatible: Hetzner Object Storage, R2, AWS S3)
 
