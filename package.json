@@ -13,21 +13,23 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@domien-sev/agent-sdk": "*",
-    "@domien-sev/directus-sdk": "*",
-    "@domien-sev/shared-types": ">=0.4.0",
-    "@domien-sev/shopify-sdk": "*",
-    "@domien-sev/creative-sdk": ">=0.7.0",
-    "@domien-sev/ads-sdk": "*",
-    "@domien-sev/vector-sdk": "*",
+    "@anthropic-ai/sdk": "^0.39.0",
     "@directus/sdk": "^18.0.0",
-    "@anthropic-ai/sdk": "^0.39.0"
+    "@domien-sev/ads-sdk": "*",
+    "@domien-sev/agent-sdk": "*",
+    "@domien-sev/creative-sdk": "*",
+    "@domien-sev/directus-sdk": "*",
+    "@domien-sev/shared-types": "*",
+    "@domien-sev/shopify-sdk": "*",
+    "@domien-sev/vector-sdk": "*",
+    "node-cron": "^3.0.3"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/node-cron": "^3.0.11",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
-    "vitest": "^3.0.0",
-    "@types/node": "^22.0.0"
+    "vitest": "^3.0.0"
   },
   "engines": {
     "node": ">=22.0.0"

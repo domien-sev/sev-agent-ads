@@ -1,6 +1,7 @@
 import http from "node:http";
 import { AdsAgent } from "./agent.js";
 import { loadConfig, createHealthEndpoint } from "@domien-sev/agent-sdk";
+import { initScheduler, stopScheduler } from "./scheduler.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
 
@@ -46,6 +47,21 @@ async function main() {
       return;
     }
 
+    // Manual trigger for optimization cycle (useful for testing)
+    if (req.url === "/optimize" && req.method === "POST") {
+      try {
+        const { runOptimizationCycleHttp } = await import("./scheduler.js");
+        const result = await runOptimizationCycleHttp(agent);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(result));
+      } catch (err) {
+        const errMsg = err instanceof Error ? err.message : String(err);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: errMsg }));
+      }
+      return;
+    }
+
     // Webhook endpoint for Shopify product create/update
     if (req.url === "/webhooks/shopify" && req.method === "POST") {
       try {
@@ -67,6 +83,7 @@ async function main() {
   });
 
   const shutdown = async () => {
+    stopScheduler();
     server.close();
     await agent.stop();
     process.exit(0);
@@ -83,6 +100,7 @@ async function main() {
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       await agent.start();
+      initScheduler(agent);
       break;
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);

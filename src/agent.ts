@@ -163,7 +163,8 @@ export class AdsAgent extends BaseAgent {
         return handleReport(this, message);
       }
 
-      if (text.startsWith("optimize") || text.startsWith("scale") || text.startsWith("pause")) {
+      if (text.startsWith("optimize") || text.startsWith("scale") || text.startsWith("pause")
+        || text.startsWith("approve") || text.startsWith("reject") || text.startsWith("snooze")) {
         return handleOptimize(this, message);
       }
 
@@ -196,8 +197,11 @@ export class AdsAgent extends BaseAgent {
         "`create campaign [name] on [platform]` — Set up a new ad campaign",
         "`report [daily/weekly]` — Performance summary",
         "`performance [campaign name]` — Detailed campaign metrics",
-        "`optimize` — Run optimization rules (pause underperformers, scale winners)",
-        "`pause [campaign]` — Pause a campaign",
+        "`optimize` — Run optimization cycle (generates recommendations for approval)",
+        "`approve all` / `approve <id>` — Approve optimization recommendations",
+        "`reject all` / `reject <id>` — Reject recommendations",
+        "`snooze all` — Snooze recommendations for next cycle",
+        "`pause [campaign]` — Pause a campaign immediately",
         "`help` — Show this message",
       ].join("\n"),
     };
