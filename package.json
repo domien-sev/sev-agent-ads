@@ -15,9 +15,9 @@
   "dependencies": {
     "@domien-sev/agent-sdk": "*",
     "@domien-sev/directus-sdk": "*",
-    "@domien-sev/shared-types": "*",
+    "@domien-sev/shared-types": ">=0.4.0",
     "@domien-sev/shopify-sdk": "*",
-    "@domien-sev/creative-sdk": "*",
+    "@domien-sev/creative-sdk": ">=0.4.0",
     "@domien-sev/ads-sdk": "*",
     "@domien-sev/vector-sdk": "*",
     "@directus/sdk": "^18.0.0",
