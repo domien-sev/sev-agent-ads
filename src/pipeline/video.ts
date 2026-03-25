@@ -173,15 +173,15 @@ export async function generateProductVideos(
   return creatives;
 }
 
-/** Tier 3: AI-generated video via Higgsfield (~20% of video volume) */
+/** Tier 3: AI-generated video via fal.ai (~20% of video volume) */
 export async function generateAIVideos(
   agent: AdsAgent,
   product: AdProductRecord,
   brief: AdBriefRecord,
   sourceImageUrl?: string,
 ): Promise<AdCreativeRecord[]> {
-  if (!agent.videoGenerator.availableProviders.includes("higgsfield")) {
-    agent.log.warn("Higgsfield not configured, skipping AI videos");
+  if (!agent.videoGenerator.availableProviders.includes("fal")) {
+    agent.log.warn("fal.ai not configured, skipping AI videos");
     return [];
   }
 
@@ -197,7 +197,7 @@ export async function generateAIVideos(
   }
 
   try {
-    const result = await agent.videoGenerator.generate("higgsfield", {
+    const result = await agent.videoGenerator.generate("fal", {
       imageUrl,
       prompt: `Cinematic product reveal of ${product.title}, smooth camera motion, professional lighting`,
       duration: 5,
@@ -214,7 +214,7 @@ export async function generateAIVideos(
       campaign_id: brief.campaign_id,
       type: "video",
       tier: "premium",
-      provider: "higgsfield",
+      provider: "fal",
       asset_url: uploaded.url,
       asset_key: uploaded.key,
       thumbnail_url: null,

@@ -73,11 +73,10 @@ export class AdsAgent extends BaseAgent {
 
     this.videoGenerator = new VideoGenerator({
       ...(process.env.CREATIFY_API_KEY && { creatify: { apiId: process.env.CREATIFY_API_ID ?? "", apiKey: process.env.CREATIFY_API_KEY } }),
-      ...(process.env.HIGGSFIELD_API_KEY && {
-        higgsfield: {
-          apiKey: process.env.HIGGSFIELD_API_KEY,
-          apiSecret: process.env.HIGGSFIELD_API_SECRET ?? "",
-          defaultModel: process.env.HIGGSFIELD_VIDEO_MODEL,
+      ...(process.env.FAL_KEY && {
+        fal: {
+          apiKey: process.env.FAL_KEY,
+          defaultModel: process.env.FAL_VIDEO_MODEL,
         },
       }),
     });
