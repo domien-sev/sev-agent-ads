@@ -23,7 +23,6 @@ async function findProducts(agent: AdsAgent, query: string) {
           { handle: { _icontains: query } },
           { brand: { _icontains: query } },
           { vendor: { _icontains: query } },
-          { tags: { _icontains: query } },
         ],
       },
       limit: 100,
