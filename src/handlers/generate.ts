@@ -3,7 +3,7 @@ import type { AdsAgent } from "../agent.js";
 import { syncProducts } from "../pipeline/ingest.js";
 import { generateBrief } from "../pipeline/brief.js";
 import { generateTemplateImages, generateAIImages, generatePremiumImages } from "../pipeline/image.js";
-import { generateTemplateVideos, generateProductVideos } from "../pipeline/video.js";
+import { generateTemplateVideos, generateProductVideos, generateAIVideos } from "../pipeline/video.js";
 import { processReviewQueue, buildReviewSlackMessage } from "../pipeline/review.js";
 import { getClient, readItems } from "../lib/directus.js";
 
@@ -134,12 +134,13 @@ export async function handleGenerate(
 
     const templateVideos = await generateTemplateVideos(agent, product, brief);
     const productVideos = await generateProductVideos(agent, product, brief);
+    const aiVideos = await generateAIVideos(agent, product, brief);
 
     const count = templateImages.length + aiImages.length + premiumImages.length +
-      templateVideos.length + productVideos.length;
+      templateVideos.length + productVideos.length + aiVideos.length;
     totalCreatives += count;
 
-    results.push(`*${product.title}:* ${count} creatives (${templateImages.length} template img, ${aiImages.length} AI img, ${premiumImages.length} premium img, ${templateVideos.length} template vid, ${productVideos.length} product vid)`);
+    results.push(`*${product.title}:* ${count} creatives (${templateImages.length} template img, ${aiImages.length} AI img, ${premiumImages.length} premium img, ${templateVideos.length} template vid, ${productVideos.length} product vid, ${aiVideos.length} AI vid)`);
   }
 
   // Review queue
