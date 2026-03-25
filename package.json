@@ -17,7 +17,7 @@
     "@domien-sev/directus-sdk": "*",
     "@domien-sev/shared-types": ">=0.4.0",
     "@domien-sev/shopify-sdk": "*",
-    "@domien-sev/creative-sdk": ">=0.5.0",
+    "@domien-sev/creative-sdk": ">=0.6.0",
     "@domien-sev/ads-sdk": "*",
     "@domien-sev/vector-sdk": "*",
     "@directus/sdk": "^18.0.0",
