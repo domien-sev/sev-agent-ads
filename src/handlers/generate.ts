@@ -52,6 +52,7 @@ export async function handleGenerate(
   agent: AdsAgent,
   message: RoutedMessage,
   continueFromLast = false,
+  groupId?: string,
 ): Promise<AgentResponse> {
   const text = message.text.trim();
   let productQuery: string;
@@ -126,15 +127,15 @@ export async function handleGenerate(
   for (const product of page) {
     const brief = await generateBrief(agent, product);
 
-    const templateImages = await generateTemplateImages(agent, product, brief);
-    const aiImages = await generateAIImages(agent, product, brief);
+    const templateImages = await generateTemplateImages(agent, product, brief, groupId);
+    const aiImages = await generateAIImages(agent, product, brief, groupId);
     const premiumImages = product.priority === "hero"
-      ? await generatePremiumImages(agent, product, brief)
+      ? await generatePremiumImages(agent, product, brief, groupId)
       : [];
 
-    const templateVideos = await generateTemplateVideos(agent, product, brief);
-    const productVideos = await generateProductVideos(agent, product, brief);
-    const aiVideos = await generateAIVideos(agent, product, brief);
+    const templateVideos = await generateTemplateVideos(agent, product, brief, groupId);
+    const productVideos = await generateProductVideos(agent, product, brief, groupId);
+    const aiVideos = await generateAIVideos(agent, product, brief, groupId);
 
     const count = templateImages.length + aiImages.length + premiumImages.length +
       templateVideos.length + productVideos.length + aiVideos.length;
