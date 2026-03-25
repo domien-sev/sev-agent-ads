@@ -53,6 +53,7 @@ export async function handleCampaign(agent: AdsAgent, message: RoutedMessage): P
   // Create campaign in Directus
   const campaign: Omit<AdCampaignRecord, "id" | "date_created" | "date_updated"> = {
     name: campaignName,
+    group_id: null,
     platform: platform as AdPlatform,
     platform_campaign_id: null,
     platform_adset_id: null,
