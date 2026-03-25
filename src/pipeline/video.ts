@@ -31,6 +31,7 @@ export async function generateTemplateVideos(
   agent: AdsAgent,
   product: AdProductRecord,
   brief: AdBriefRecord,
+  groupId?: string,
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating template videos for: ${product.title}`);
 
@@ -72,6 +73,7 @@ export async function generateTemplateVideos(
         brief_id: brief.id!,
         product_id: product.id!,
         campaign_id: brief.campaign_id,
+        group_id: groupId ?? null,
         type: "video",
         tier: "template",
         provider: "creatomate",
@@ -111,6 +113,7 @@ export async function generateProductVideos(
   agent: AdsAgent,
   product: AdProductRecord,
   brief: AdBriefRecord,
+  groupId?: string,
 ): Promise<AdCreativeRecord[]> {
   if (!agent.videoGenerator.availableProviders.includes("creatify")) {
     agent.log.warn("Creatify not configured, skipping product videos");
@@ -140,6 +143,7 @@ export async function generateProductVideos(
       brief_id: brief.id!,
       product_id: product.id!,
       campaign_id: brief.campaign_id,
+      group_id: groupId ?? null,
       type: "video",
       tier: "ai-enhanced",
       provider: "creatify",
@@ -212,6 +216,7 @@ export async function generateAIVideos(
       brief_id: brief.id!,
       product_id: product.id!,
       campaign_id: brief.campaign_id,
+      group_id: null,
       type: "video",
       tier: "premium",
       provider: "fal",

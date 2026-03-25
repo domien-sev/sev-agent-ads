@@ -76,6 +76,7 @@ export async function generateTemplateImages(
   agent: AdsAgent,
   product: AdProductRecord,
   brief: AdBriefRecord,
+  groupId?: string,
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating template images for: ${product.title}`);
 
@@ -122,6 +123,7 @@ export async function generateTemplateImages(
           brief_id: brief.id!,
           product_id: product.id!,
           campaign_id: brief.campaign_id,
+          group_id: groupId ?? null,
           type: "image",
           tier: "template",
           provider: "creatomate",
@@ -162,6 +164,7 @@ export async function generateAIImages(
   agent: AdsAgent,
   product: AdProductRecord,
   brief: AdBriefRecord,
+  groupId?: string,
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating AI images for: ${product.title}`);
 
@@ -212,6 +215,7 @@ export async function generateAIImages(
         brief_id: brief.id!,
         product_id: product.id!,
         campaign_id: brief.campaign_id,
+        group_id: groupId ?? null,
         type: "image",
         tier: "ai-enhanced",
         provider: "flux",
@@ -251,6 +255,7 @@ export async function generatePremiumImages(
   agent: AdsAgent,
   product: AdProductRecord,
   brief: AdBriefRecord,
+  groupId?: string,
 ): Promise<AdCreativeRecord[]> {
   agent.log.info(`Generating premium images for: ${product.title}`);
 
@@ -278,6 +283,7 @@ export async function generatePremiumImages(
       brief_id: brief.id!,
       product_id: product.id!,
       campaign_id: brief.campaign_id,
+      group_id: null,
       type: "image",
       tier: "premium",
       provider,
