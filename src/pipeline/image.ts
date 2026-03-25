@@ -246,7 +246,7 @@ export async function generateAIImages(
   return creatives;
 }
 
-/** Tier 3: Premium creatives via Recraft v3 or GPT Image (~10% volume) */
+/** Tier 3: Premium creatives via GPT Image (~10% volume) */
 export async function generatePremiumImages(
   agent: AdsAgent,
   product: AdProductRecord,
@@ -258,8 +258,7 @@ export async function generatePremiumImages(
   const creatives: AdCreativeRecord[] = [];
   const creativeId = randomUUID();
 
-  // Use Recraft for text-heavy banners (best text rendering)
-  const provider = agent.imageGenerator.availableProviders.includes("recraft") ? "recraft" : "openai";
+  const provider = "openai" as const;
   const discount = product.discount_percent ? `-${product.discount_percent}%` : "";
 
   try {

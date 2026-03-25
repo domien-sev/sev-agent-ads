@@ -75,7 +75,7 @@ External:
 ## Environment Variables
 
 See `.env.example` for the full list. Key ones:
-- Creative: `CREATOMATE_API_KEY`, `FLUX_API_KEY`, `RECRAFT_API_KEY`, `PHOTOROOM_API_KEY`
+- Creative: `CREATOMATE_API_KEY`, `FLUX_API_KEY`, `OPENAI_IMAGE_API_KEY`, `PHOTOROOM_API_KEY`
 - Video: `CREATIFY_API_KEY`, `HEYGEN_API_KEY`, `RUNWAY_API_KEY`
 - Platforms: `META_*`, `GOOGLE_ADS_*`, `TIKTOK_*`, `PINTEREST_*`
 - Storage: `S3_*` (S3-compatible: Hetzner Object Storage, R2, AWS S3)
@@ -105,3 +105,8 @@ This agent uses `@domien-sev/*` packages from GitHub Packages.
 - In Coolify, `GH_PKG_TOKEN` must be set as an env var
 - See `sev-ai-core/CLAUDE.md` for full GitHub setup details
 
+
+
+## Project Pickup
+
+See [`PICKUP.md`](../PICKUP.md) in the project root for all unfinished projects and their remaining tasks.

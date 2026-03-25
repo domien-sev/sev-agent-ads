@@ -62,7 +62,6 @@ export class AdsAgent extends BaseAgent {
           model: process.env.FLUX_MODEL,
         },
       }),
-      ...(process.env.RECRAFT_API_KEY && { recraft: { apiKey: process.env.RECRAFT_API_KEY } }),
       ...(process.env.OPENAI_IMAGE_API_KEY && {
         openai: {
           apiKey: process.env.OPENAI_IMAGE_API_KEY,
