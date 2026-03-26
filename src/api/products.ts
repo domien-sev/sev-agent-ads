@@ -27,13 +27,10 @@ export function registerProductRoutes(router: ApiRouter, agent: AdsAgent) {
     }
 
     const client = getClient(agent);
-    const products = await client.request(
-      readItems("ad_products", {
-        filter: Object.keys(filter).length > 0 ? filter : undefined,
-        limit,
-        offset,
-      }),
-    );
+    const queryOpts: Record<string, unknown> = { limit, offset };
+    if (Object.keys(filter).length > 0) queryOpts.filter = filter;
+
+    const products = await client.request(readItems("ad_products", queryOpts));
 
     return { status: 200, data: { items: products, limit, offset } };
   });

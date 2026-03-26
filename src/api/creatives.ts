@@ -26,13 +26,11 @@ export function registerCreativeRoutes(router: ApiRouter, agent: AdsAgent) {
     if (product_id) filter.product_id = { _eq: product_id };
 
     const client = getClient(agent);
+    const queryOpts: Record<string, unknown> = { limit, offset, sort: ["-date_created"] };
+    if (Object.keys(filter).length > 0) queryOpts.filter = filter;
+
     const creatives = await client.request(
-      readItems("ad_creatives", {
-        filter: Object.keys(filter).length > 0 ? filter : undefined,
-        limit,
-        offset,
-        sort: ["-date_created"],
-      }),
+      readItems("ad_creatives", queryOpts),
     ) as AdCreativeRecord[];
 
     return { status: 200, data: { items: creatives, limit, offset } };

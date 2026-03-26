@@ -19,13 +19,11 @@ export function registerCampaignRoutes(router: ApiRouter, agent: AdsAgent) {
     if (platform) filter.platform = { _eq: platform };
 
     const client = getClient(agent);
+    const queryOpts: Record<string, unknown> = { limit, offset, sort: ["-date_created"] };
+    if (Object.keys(filter).length > 0) queryOpts.filter = filter;
+
     const campaigns = await client.request(
-      readItems("ad_campaigns", {
-        filter: Object.keys(filter).length > 0 ? filter : undefined,
-        limit,
-        offset,
-        sort: ["-date_created"],
-      }),
+      readItems("ad_campaigns", queryOpts),
     ) as AdCampaignRecord[];
 
     return { status: 200, data: { items: campaigns, limit, offset } };
