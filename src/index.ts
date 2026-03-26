@@ -2,6 +2,7 @@ import http from "node:http";
 import { AdsAgent } from "./agent.js";
 import { loadConfig, createHealthEndpoint } from "@domien-sev/agent-sdk";
 import { initScheduler, stopScheduler } from "./scheduler.js";
+import { createApiRouter } from "./api/index.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
 
@@ -10,10 +11,18 @@ async function main() {
   const agent = new AdsAgent(config);
 
   const healthHandler = createHealthEndpoint(agent);
+  const apiRouter = createApiRouter(agent);
 
   const server = http.createServer(async (req, res) => {
     if (req.url === "/health" && req.method === "GET") {
       return healthHandler(req, res);
+    }
+
+    // Structured REST API — /api/* routes
+    if (req.url?.startsWith("/api/")) {
+      const handled = await apiRouter.handle(req, res);
+      if (handled) return;
+      // Fall through to 404 if no route matched
     }
 
     if (req.url === "/message" && req.method === "POST") {
@@ -47,8 +56,8 @@ async function main() {
       return;
     }
 
-    // Manual trigger for optimization cycle (useful for testing)
-    if (req.url === "/optimize" && req.method === "POST") {
+    // Legacy /optimize endpoint — kept for backwards compat, also available at /api/optimize
+    if ((req.url === "/optimize" || req.url === "/api/optimize") && req.method === "POST") {
       try {
         const { runOptimizationCycleHttp } = await import("./scheduler.js");
         const result = await runOptimizationCycleHttp(agent);
