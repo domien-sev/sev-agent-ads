@@ -93,7 +93,9 @@ export class ApiRouter {
         res.writeHead(result.status, { "Content-Type": "application/json" });
         res.end(JSON.stringify(result.data));
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
+        const message = err instanceof Error
+          ? err.message
+          : (typeof err === "object" && err !== null ? JSON.stringify(err) : String(err));
         console.error(`API error [${method} ${pathname}]:`, message);
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: message }));
