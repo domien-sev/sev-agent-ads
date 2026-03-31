@@ -1,7 +1,8 @@
 import http from "node:http";
 import { AdsAgent } from "./agent.js";
-import { loadConfig, createHealthEndpoint } from "@domien-sev/agent-sdk";
-import { initScheduler, stopScheduler } from "./scheduler.js";
+import { loadConfig, createHealthEndpoint, createHeartbeatEndpoint } from "@domien-sev/agent-sdk";
+import { initScheduler, stopScheduler, runOptimizationCycleHttp } from "./scheduler.js";
+import { runDailyAlerts } from "./handlers/alerts.js";
 import { createApiRouter } from "./api/index.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
@@ -11,11 +12,25 @@ async function main() {
   const agent = new AdsAgent(config);
 
   const healthHandler = createHealthEndpoint(agent);
+  const heartbeatHandler = createHeartbeatEndpoint(agent, {
+    "hourly-optimize": async (_p, a) => {
+      const result = await runOptimizationCycleHttp(a as AdsAgent);
+      return `Analyzed ${result.campaigns_analyzed} campaigns, ${result.recommendations?.length ?? 0} recommendations`;
+    },
+    "daily-alerts": async (_p, a) => {
+      const result = await runDailyAlerts(a as AdsAgent);
+      return `${result.alerts.length} alerts`;
+    },
+  });
   const apiRouter = createApiRouter(agent);
 
   const server = http.createServer(async (req, res) => {
     if (req.url === "/health" && req.method === "GET") {
       return healthHandler(req, res);
+    }
+
+    if (req.url === "/heartbeat" && req.method === "POST") {
+      return heartbeatHandler(req, res);
     }
 
     // Structured REST API — /api/* routes
