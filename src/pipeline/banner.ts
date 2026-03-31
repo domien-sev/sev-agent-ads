@@ -296,8 +296,7 @@ export async function renderBanners(
       await page.setContent(html, { waitUntil: "networkidle0" });
 
       // Wait for fonts to load
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await page.evaluate(() => (document as any).fonts.ready);
+      await page.evaluate("document.fonts.ready");
 
       const buffer = await page.screenshot({
         type: "png",
