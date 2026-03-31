@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: {{WIDTH}}px;
+    height: {{HEIGHT}}px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    position: relative;
+  }
+
+  .bg {
+    position: absolute;
+    inset: 0;
+    background: url('{{HERO_IMAGE}}') {{BG_POSITION}}/cover no-repeat;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0,0,0,0.35) 0%,
+      rgba(0,0,0,0.15) 30%,
+      rgba(0,0,0,0.15) 50%,
+      rgba(0,0,0,0.55) 75%,
+      rgba(0,0,0,0.75) 100%
+    );
+  }
+
+  .content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Safe zone padding: accounts for Meta UI overlays
+       9:16 Stories/Reels: ~250px top, ~340px bottom (at 1080w)
+       Feed (1:1, 4:5): ~5% all around
+       1.91:1 link ads: minimal overlay */
+    padding: {{SAFE_TOP}} {{SAFE_SIDE}} {{SAFE_BOTTOM}};
+  }
+
+  /* Top section */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .badge {
+    font-size: {{BADGE_SIZE}};
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    opacity: 0.9;
+  }
+
+  .sev-logo {
+    width: {{SEV_LOGO_W}};
+    opacity: 0.85;
+  }
+
+  /* Center / main message */
+  .center {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: {{CENTER_GAP}};
+  }
+
+  .event-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: {{TITLE_SIZE}};
+    font-weight: 400;
+    line-height: 1.1;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+
+  .discount-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: {{DISC_GAP}};
+  }
+
+  .discount-text {
+    font-size: {{DISC_TEXT_SIZE}};
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .discount-badge {
+    background: #E8652D;
+    color: #fff;
+    font-size: {{DISC_BADGE_SIZE}};
+    font-weight: 700;
+    padding: {{DISC_BADGE_PAD}};
+    border-radius: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: {{SUBTITLE_SIZE}};
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  /* Date + Location */
+  .info {
+    text-align: center;
+    margin-top: {{INFO_MT}};
+  }
+
+  .date {
+    font-size: {{DATE_SIZE}};
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .location {
+    font-size: {{LOC_SIZE}};
+    font-weight: 300;
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+
+  /* CTA */
+  .cta {
+    display: inline-block;
+    margin: {{CTA_MT}} auto 0;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: {{CTA_SIZE}};
+    font-weight: 600;
+    padding: {{CTA_PAD}};
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Brand logos */
+  .brands {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: {{BRAND_GAP}};
+    padding-top: {{BRAND_PT}};
+  }
+
+  .brands img {
+    height: {{BRAND_H}};
+    max-width: {{BRAND_MAX_W}};
+    object-fit: contain;
+    opacity: 0.9;
+    filter: brightness(10);
+  }
+
+  .brands img.no-brighten {
+    filter: none;
+  }
+
+  .more-brands {
+    font-size: {{MORE_SIZE}};
+    font-style: italic;
+    opacity: 0.7;
+    font-weight: 300;
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="overlay"></div>
+  <div class="content">
+
+    <div class="top">
+      <div class="badge">Physical<br>Private<br>Sale</div>
+      <img class="sev-logo" src="{{SEV_LOGO_URL}}" alt="">
+    </div>
+
+    <div class="center">
+      <div class="event-title">Le Salon<br>VIP</div>
+      <div class="discount-line">
+        <span class="discount-text">{{DISCOUNT_PREFIX}}</span>
+        <span class="discount-badge">-80%</span>
+        <span class="discount-text">{{DISCOUNT_SUFFIX}}</span>
+      </div>
+      <div class="subtitle">{{SUBTITLE}}</div>
+
+      <div class="info">
+        <div class="date">11 — 26 {{MONTH}} &nbsp;|&nbsp; 11u — 17u</div>
+        <div class="location">Bleckmann, Sint-Niklaas (Belsele)</div>
+      </div>
+
+      <div class="cta">{{CTA_TEXT}}</div>
+    </div>
+
+    <div class="brands">
+      {{BRAND_LOGOS}}
+      <span class="more-brands">{{MORE_TEXT}}</span>
+    </div>
+
+  </div>
+</body>
+</html>

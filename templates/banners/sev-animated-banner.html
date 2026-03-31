@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #F4F2EA;
+    --mauve: #B5A196;
+    --coral: #F07068;
+    --black: #1A1A1A;
+    --white: #FFFFFF;
+    --grey-icon: #D7D0CA;
+    --trustpilot-green: #00B67A;
+    --strike-grey: #888;
+  }
+
+  body {
+    width: {{WIDTH}}px;
+    height: {{HEIGHT}}px;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Oswald', 'Impact', sans-serif;
+  }
+
+  .banner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ==========================================
+     DECORATIVE MAUVE CIRCLE
+     ========================================== */
+  .mauve-circle {
+    position: absolute;
+    width: {{CIRCLE_SIZE}};
+    height: {{CIRCLE_SIZE}};
+    border-radius: 50%;
+    background: var(--mauve);
+    right: {{CIRCLE_RIGHT}};
+    top: {{CIRCLE_TOP}};
+    opacity: 0;
+    animation: circleIn 0.6s ease-out 0.2s forwards;
+  }
+
+  @keyframes circleIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ==========================================
+     PHASE 1: INTRO
+     ========================================== */
+  .intro {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: {{INTRO_PADDING}};
+    animation: introOut 0.5s ease-in {{INTRO_END}} forwards;
+  }
+
+  @keyframes introOut {
+    to { opacity: 0; pointer-events: none; }
+  }
+
+  /* SEV Logo — stacked with black highlight bars */
+  .sev-logo-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-bottom: {{LOGO_MARGIN_BOTTOM}};
+    animation: fadeSlideDown 0.4s ease-out forwards;
+  }
+
+  .sev-logo-intro .line {
+    display: inline-block;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: {{LOGO_INTRO_SIZE}};
+    text-transform: uppercase;
+    padding: 1px 6px;
+    line-height: 1.2;
+    width: fit-content;
+    letter-spacing: 0.02em;
+  }
+
+  .sev-logo-intro .line .red-o {
+    color: #D93328;
+  }
+
+  /* Tagline */
+  .tagline {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: {{TAGLINE_SIZE}};
+    color: var(--black);
+    text-transform: uppercase;
+    line-height: 1.05;
+    opacity: 0;
+    animation: fadeSlideUp 0.5s ease-out 0.3s forwards;
+  }
+
+  /* CTA Button */
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--coral);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{CTA_SIZE}};
+    padding: {{CTA_PADDING}};
+    border-radius: 4px;
+    margin-top: auto;
+    width: fit-content;
+    opacity: 0;
+    animation: ctaGrow 0.4s ease-out {{CTA_DELAY}} forwards;
+  }
+
+  .cta-btn .hand { font-style: normal; }
+
+  @keyframes ctaGrow {
+    from { opacity: 0; transform: scaleY(0.2); transform-origin: bottom; }
+    to { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ==========================================
+     PHASE 2: PRODUCT SLIDES
+     ========================================== */
+  .product-carousel {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+  }
+
+  .product-slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Stagger each product slide */
+  {{PRODUCT_KEYFRAMES}}
+
+  /* SEV Logo — small, top-right during products */
+  .sev-logo-small {
+    position: absolute;
+    top: {{SMALL_LOGO_TOP}};
+    right: {{SMALL_LOGO_RIGHT}};
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    z-index: 15;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-out {{INTRO_END}} forwards;
+  }
+
+  .sev-logo-small .line {
+    display: inline-block;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: {{LOGO_SMALL_SIZE}};
+    text-transform: uppercase;
+    padding: 0 3px;
+    line-height: 1.15;
+    width: fit-content;
+  }
+
+  .sev-logo-small .line .red-o { color: #D93328; }
+
+  /* Product image */
+  .product-slide .product-img {
+    position: absolute;
+    max-height: 80%;
+    max-width: 55%;
+    object-fit: contain;
+    bottom: {{PRODUCT_IMG_BOTTOM}};
+    left: {{PRODUCT_IMG_LEFT}};
+    z-index: 6;
+  }
+
+  /* Category icon circle */
+  .product-slide .category-icon {
+    position: absolute;
+    top: {{ICON_TOP}};
+    right: {{ICON_RIGHT}};
+    width: {{ICON_SIZE}};
+    height: {{ICON_SIZE}};
+    border-radius: 50%;
+    background: var(--grey-icon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 8;
+  }
+
+  .category-icon img {
+    width: 55%;
+    height: 55%;
+    object-fit: contain;
+    opacity: 0.5;
+  }
+
+  /* Brand logo */
+  .product-slide .brand-logo {
+    position: absolute;
+    top: {{BRAND_LOGO_TOP}};
+    left: {{BRAND_LOGO_LEFT}};
+    max-height: {{BRAND_LOGO_MAX_H}};
+    max-width: {{BRAND_LOGO_MAX_W}};
+    object-fit: contain;
+    z-index: 8;
+    opacity: 0.85;
+  }
+
+  /* Price block */
+  .price-block {
+    position: absolute;
+    left: {{PRICE_LEFT}};
+    top: {{PRICE_TOP}};
+    z-index: 8;
+  }
+
+  .price-original {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: {{PRICE_ORIG_SIZE}};
+    color: var(--strike-grey);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    opacity: 0;
+  }
+
+  .price-sale {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: {{PRICE_SALE_SIZE}};
+    color: var(--coral);
+    line-height: 1;
+  }
+
+  .price-discount {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: {{PRICE_DISC_SIZE}};
+    color: var(--black);
+    opacity: 0.7;
+  }
+
+  /* Price animation within each slide */
+  .price-phase-1 {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  .price-phase-2 {
+    opacity: 0;
+    animation: fadeIn 0.3s ease-out 1.2s forwards;
+  }
+
+  /* ==========================================
+     PHASE 3: OUTRO — categories + trustpilot
+     ========================================== */
+  .outro {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: {{OUTRO_PADDING}};
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .category-list {
+    margin-top: {{CAT_LIST_MARGIN}};
+    list-style: none;
+  }
+
+  .category-list li {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: {{CAT_SIZE}};
+    color: var(--black);
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .category-list li::before {
+    content: "• ";
+    color: var(--coral);
+  }
+
+  .category-list li:last-child {
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  .trustpilot-badge {
+    position: absolute;
+    bottom: {{TRUST_BOTTOM}};
+    right: {{TRUST_RIGHT}};
+    text-align: right;
+  }
+
+  .trustpilot-badge .stars {
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  .trustpilot-badge .star {
+    width: {{STAR_SIZE}};
+    height: {{STAR_SIZE}};
+    background: var(--trustpilot-green);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: {{STAR_FONT}};
+    line-height: 1;
+  }
+
+  .trustpilot-badge .tp-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: {{TP_LABEL_SIZE}};
+    color: var(--black);
+    margin-bottom: 2px;
+  }
+
+  .trustpilot-badge .tp-text {
+    font-family: 'Inter', sans-serif;
+    font-size: {{TP_TEXT_SIZE}};
+    color: var(--strike-grey);
+    margin-top: 2px;
+  }
+
+  /* Persistent CTA at bottom */
+  .cta-persistent {
+    position: absolute;
+    bottom: {{CTA_BOTTOM}};
+    left: {{CTA_LEFT}};
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--coral);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{CTA_PERSIST_SIZE}};
+    padding: {{CTA_PERSIST_PAD}};
+    border-radius: 4px;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-out {{CTA_PERSIST_DELAY}} forwards;
+  }
+
+  /* ==========================================
+     SHARED ANIMATIONS
+     ========================================== */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideProduct {
+    0% { opacity: 0; transform: translateX(30px); }
+    8% { opacity: 1; transform: translateX(0); }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+
+  <!-- Decorative mauve circle -->
+  <div class="mauve-circle"></div>
+
+  <!-- PHASE 1: Intro -->
+  <div class="intro">
+    <div class="sev-logo-intro">
+      <span class="line">SH<span class="red-o">O</span>PPING</span>
+      <span class="line">EVENT</span>
+      <span class="line">VIP</span>
+    </div>
+    <div class="tagline">{{TAGLINE}}</div>
+  </div>
+
+  <!-- Small logo (visible during products + outro) -->
+  <div class="sev-logo-small">
+    <span class="line">SH<span class="red-o">O</span>PPING</span>
+    <span class="line">EVENT</span>
+    <span class="line">VIP</span>
+  </div>
+
+  <!-- PHASE 2: Product Carousel -->
+  <div class="product-carousel">
+    {{PRODUCT_SLIDES}}
+  </div>
+
+  <!-- PHASE 3: Outro -->
+  <div class="outro" style="animation: fadeIn 0.4s ease-out {{OUTRO_START}} forwards;">
+    <div class="sev-logo-intro" style="animation: none; opacity: 1;">
+      <span class="line">SH<span class="red-o">O</span>PPING</span>
+      <span class="line">EVENT</span>
+      <span class="line">VIP</span>
+    </div>
+    <ul class="category-list">
+      {{CATEGORY_LIST}}
+    </ul>
+    <div class="trustpilot-badge">
+      <div class="tp-label">★ Trustpilot</div>
+      <div class="stars">
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star" style="background: linear-gradient(90deg, var(--trustpilot-green) 50%, #ddd 50%);">★</span>
+      </div>
+      <div class="tp-text">Rated 4.4/5 by hundreds<br>of happy customers.</div>
+    </div>
+  </div>
+
+  <!-- Persistent CTA -->
+  <div class="cta-persistent">
+    DEVENIR <b>VIP</b> <span class="hand">☞</span>
+  </div>
+
+</div>
+</body>
+</html>

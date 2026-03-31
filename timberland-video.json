@@ -1,0 +1,335 @@
+{
+  "source": {
+    "output_format": "mp4",
+    "width": 1080,
+    "height": 1920,
+    "duration": 15,
+    "elements": [
+      {
+        "type": "shape",
+        "track": 1,
+        "time": 0,
+        "duration": 15,
+        "fill_color": "#1A1A1A"
+      },
+      {
+        "type": "composition",
+        "track": 2,
+        "time": 0,
+        "duration": 3,
+        "animations": [
+          { "type": "slide", "fade": true, "duration": 0.5 }
+        ],
+        "elements": [
+          {
+            "type": "image",
+            "source": "https://cdn.shopify.com/s/files/1/0297/9138/7753/files/TB0A22W2EIN1_D.png?v=1772635202",
+            "width": "70%",
+            "height": "55%",
+            "x": "50%",
+            "y": "35%",
+            "fit": "contain"
+          },
+          {
+            "type": "text",
+            "text": "Scar Ridge Parka",
+            "font_family": "Montserrat",
+            "font_weight": "700",
+            "font_size": "7 vmin",
+            "fill_color": "#FFFFFF",
+            "x": "50%",
+            "y": "70%",
+            "width": "85%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "€380",
+            "font_family": "Montserrat",
+            "font_weight": "400",
+            "font_size": "5 vmin",
+            "fill_color": "#888888",
+            "x": "35%",
+            "y": "80%",
+            "text_decoration": "line-through",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "€119",
+            "font_family": "Montserrat",
+            "font_weight": "800",
+            "font_size": "7 vmin",
+            "fill_color": "#FF4444",
+            "x": "65%",
+            "y": "80%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          }
+        ]
+      },
+      {
+        "type": "composition",
+        "track": 2,
+        "time": 3,
+        "duration": 3,
+        "animations": [
+          { "type": "slide", "fade": true, "duration": 0.5 }
+        ],
+        "elements": [
+          {
+            "type": "image",
+            "source": "https://www.shoppingeventvip.com/cdn/shop/files/TB0A42BB3171_D_5000x.jpg?v=1772635936",
+            "width": "70%",
+            "height": "55%",
+            "x": "50%",
+            "y": "35%",
+            "fit": "contain"
+          },
+          {
+            "type": "text",
+            "text": "Hollis Canvas Jacket",
+            "font_family": "Montserrat",
+            "font_weight": "700",
+            "font_size": "7 vmin",
+            "fill_color": "#FFFFFF",
+            "x": "50%",
+            "y": "70%",
+            "width": "85%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "€200",
+            "font_family": "Montserrat",
+            "font_weight": "400",
+            "font_size": "5 vmin",
+            "fill_color": "#888888",
+            "x": "35%",
+            "y": "80%",
+            "text_decoration": "line-through",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "€85",
+            "font_family": "Montserrat",
+            "font_weight": "800",
+            "font_size": "7 vmin",
+            "fill_color": "#FF4444",
+            "x": "65%",
+            "y": "80%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          }
+        ]
+      },
+      {
+        "type": "composition",
+        "track": 2,
+        "time": 6,
+        "duration": 3,
+        "animations": [
+          { "type": "slide", "fade": true, "duration": 0.5 }
+        ],
+        "elements": [
+          {
+            "type": "image",
+            "source": "https://www.shoppingeventvip.com/cdn/shop/files/TB0A2M2R2431_D_5000x.png?v=1772700002",
+            "width": "70%",
+            "height": "55%",
+            "x": "50%",
+            "y": "35%",
+            "fit": "contain"
+          },
+          {
+            "type": "text",
+            "text": "Waterproof Hiking Boot",
+            "font_family": "Montserrat",
+            "font_weight": "700",
+            "font_size": "7 vmin",
+            "fill_color": "#FFFFFF",
+            "x": "50%",
+            "y": "70%",
+            "width": "85%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "€150",
+            "font_family": "Montserrat",
+            "font_weight": "400",
+            "font_size": "5 vmin",
+            "fill_color": "#888888",
+            "x": "35%",
+            "y": "80%",
+            "text_decoration": "line-through",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "€68",
+            "font_family": "Montserrat",
+            "font_weight": "800",
+            "font_size": "7 vmin",
+            "fill_color": "#FF4444",
+            "x": "65%",
+            "y": "80%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          }
+        ]
+      },
+      {
+        "type": "composition",
+        "track": 2,
+        "time": 9,
+        "duration": 3,
+        "animations": [
+          { "type": "slide", "fade": true, "duration": 0.5 }
+        ],
+        "elements": [
+          {
+            "type": "image",
+            "source": "https://www.shoppingeventvip.com/cdn/shop/files/TB0A44A13171_D_5000x.jpg?v=1772635973",
+            "width": "70%",
+            "height": "55%",
+            "x": "50%",
+            "y": "35%",
+            "fit": "contain"
+          },
+          {
+            "type": "text",
+            "text": "Garfield Puffer Jacket",
+            "font_family": "Montserrat",
+            "font_weight": "700",
+            "font_size": "7 vmin",
+            "fill_color": "#FFFFFF",
+            "x": "50%",
+            "y": "70%",
+            "width": "85%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "€200",
+            "font_family": "Montserrat",
+            "font_weight": "400",
+            "font_size": "5 vmin",
+            "fill_color": "#888888",
+            "x": "35%",
+            "y": "80%",
+            "text_decoration": "line-through",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "€70",
+            "font_family": "Montserrat",
+            "font_weight": "800",
+            "font_size": "7 vmin",
+            "fill_color": "#FF4444",
+            "x": "65%",
+            "y": "80%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          }
+        ]
+      },
+      {
+        "type": "composition",
+        "track": 2,
+        "time": 12,
+        "duration": 3,
+        "animations": [
+          { "type": "fade", "duration": 0.5 }
+        ],
+        "elements": [
+          {
+            "type": "shape",
+            "fill_color": "#B8A88A",
+            "width": "100%",
+            "height": "100%"
+          },
+          {
+            "type": "text",
+            "text": "TIMBERLAND",
+            "font_family": "Montserrat",
+            "font_weight": "800",
+            "font_size": "9 vmin",
+            "fill_color": "#1A1A1A",
+            "x": "50%",
+            "y": "30%",
+            "letter_spacing": "8",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "UP TO 69% OFF",
+            "font_family": "Montserrat",
+            "font_weight": "800",
+            "font_size": "10 vmin",
+            "fill_color": "#FF4444",
+            "x": "50%",
+            "y": "45%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          },
+          {
+            "type": "text",
+            "text": "Shop Now at\nShoppingEventVIP.com",
+            "font_family": "Montserrat",
+            "font_weight": "600",
+            "font_size": "5.5 vmin",
+            "fill_color": "#1A1A1A",
+            "x": "50%",
+            "y": "62%",
+            "line_height": "150%",
+            "x_alignment": "50%",
+            "y_alignment": "50%"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "track": 3,
+        "time": 0,
+        "duration": 12,
+        "text": "TIMBERLAND SALE",
+        "font_family": "Montserrat",
+        "font_weight": "800",
+        "font_size": "4 vmin",
+        "fill_color": "#B8A88A",
+        "x": "50%",
+        "y": "8%",
+        "letter_spacing": "6",
+        "x_alignment": "50%",
+        "y_alignment": "50%"
+      },
+      {
+        "type": "text",
+        "track": 4,
+        "time": 0,
+        "duration": 12,
+        "text": "UP TO 69% OFF",
+        "font_family": "Montserrat",
+        "font_weight": "700",
+        "font_size": "3.5 vmin",
+        "fill_color": "#FF4444",
+        "x": "50%",
+        "y": "93%",
+        "x_alignment": "50%",
+        "y_alignment": "50%"
+      }
+    ]
+  }
+}

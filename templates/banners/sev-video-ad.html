@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Inter:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #F4F2EA;
+    --mauve: #B5A196;
+    --coral: #F07068;
+    --black: #1A1A1A;
+    --white: #FFFFFF;
+    --grey-light: #D7D0CA;
+    --strike-grey: #999;
+    --tp-green: #00B67A;
+  }
+
+  body {
+    width: {{WIDTH}}px;
+    height: {{HEIGHT}}px;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Oswald', sans-serif;
+  }
+
+  .ad { width: 100%; height: 100%; position: relative; overflow: hidden; }
+
+  /* ===========================================
+     MAUVE CIRCLE — always visible, size varies
+     =========================================== */
+  .mauve-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--mauve);
+    opacity: 0;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    transform: translateX(30%) scale(0.85);
+    /* Size/position set per format */
+    width: {{CIRCLE_W}};
+    height: {{CIRCLE_W}};
+    right: {{CIRCLE_R}};
+    top: {{CIRCLE_T}};
+  }
+  .mauve-circle.visible { opacity: 1; transform: translateX(0) scale(1); }
+
+  /* ===========================================
+     PHASES — intro / products / outro
+     =========================================== */
+  .phase {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 0.45s ease;
+    pointer-events: none;
+    display: flex; flex-direction: column;
+    padding: {{PAD}};
+  }
+  .phase.active { opacity: 1; pointer-events: auto; }
+
+  /* ===========================================
+     SEV LOGO
+     =========================================== */
+  .sev-logo {
+    width: {{LOGO_W}};
+    opacity: 0; transform: translateY(-6px);
+    transition: opacity 0.4s 0.1s, transform 0.4s 0.1s;
+  }
+  .sev-logo img { width: 100%; height: auto; display: block; }
+  .phase.active .sev-logo { opacity: 1; transform: translateY(0); }
+
+  .sev-logo-sm {
+    position: absolute; top: {{SM_LOGO_T}}; right: {{SM_LOGO_R}};
+    width: {{SM_LOGO_W}}; z-index: 15;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .sev-logo-sm.visible { opacity: 1; }
+  .sev-logo-sm img { width: 100%; height: auto; }
+
+  /* ===========================================
+     INTRO
+     =========================================== */
+  .intro { z-index: 10; }
+  .intro .sev-logo { margin-bottom: {{LOGO_MB}}; }
+
+  .tagline {
+    font-weight: 700;
+    font-size: {{TAG_SIZE}};
+    color: var(--black);
+    text-transform: uppercase;
+    line-height: 1.08;
+    max-width: 80%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.5s 0.25s, transform 0.5s 0.25s;
+  }
+  .intro.active .tagline { opacity: 1; transform: translateY(0); }
+
+  .cta {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--coral); color: var(--white);
+    font-family: 'Inter', sans-serif; font-weight: 700;
+    font-size: {{CTA_SIZE}}; padding: {{CTA_PAD}};
+    border-radius: 5px; width: fit-content;
+    opacity: 0; transform: scaleY(0.2); transform-origin: bottom;
+    transition: opacity 0.35s 0.7s, transform 0.35s 0.7s;
+  }
+  .intro.active .cta { opacity: 1; transform: scaleY(1); }
+
+  /* ===========================================
+     PERSISTENT CTA
+     =========================================== */
+  .cta-fix {
+    position: absolute; bottom: {{CTA_FIX_B}}; left: {{CTA_FIX_L}};
+    z-index: 20;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--coral); color: var(--white);
+    font-family: 'Inter', sans-serif; font-weight: 700;
+    font-size: {{CTA_FIX_SIZE}}; padding: {{CTA_FIX_PAD}};
+    border-radius: 5px;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .cta-fix.visible { opacity: 1; }
+
+  /* ===========================================
+     PRODUCT SLIDES
+     =========================================== */
+  .carousel { position: absolute; inset: 0; z-index: 5; }
+
+  .slide {
+    position: absolute; inset: 0;
+    opacity: 0; transform: translateX(15px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); }
+  .slide.exit { opacity: 0; transform: translateX(-12px); transition-duration: 0.3s; }
+
+  /* Product image — centered, large, with subtle shadow */
+  .slide .prod-img {
+    position: absolute;
+    left: 50%; top: 45%;
+    transform: translate(-50%, -50%);
+    max-height: {{IMG_MAX_H}};
+    max-width: {{IMG_MAX_W}};
+    object-fit: contain;
+    z-index: 6;
+    filter: drop-shadow(0 6px 20px rgba(0,0,0,0.10));
+  }
+
+  /* Brand logo */
+  .slide .brand-logo {
+    position: absolute; top: {{BL_T}}; left: {{BL_L}};
+    max-height: {{BL_H}}; max-width: {{BL_W}};
+    object-fit: contain; z-index: 8;
+    opacity: 0; transition: opacity 0.3s 0.15s;
+  }
+  .slide.active .brand-logo { opacity: 0.85; }
+
+  /* Price block — with subtle bg panel for legibility */
+  .slide .prices {
+    position: absolute; left: {{PR_L}}; bottom: {{PR_B}};
+    z-index: 8;
+    background: rgba(244, 242, 234, 0.85);
+    padding: 2% 3%;
+    border-radius: 6px;
+  }
+
+  .prices .sale {
+    font-weight: 700; font-size: {{PR_SALE_SIZE}}; color: var(--coral);
+    line-height: 1;
+    opacity: 0; transform: translateY(-6px);
+    transition: opacity 0.3s 0.35s, transform 0.3s 0.35s;
+  }
+  .slide.active .prices .sale { opacity: 1; transform: translateY(0); }
+
+  .prices .meta {
+    display: flex; align-items: baseline; gap: 0.5em;
+    margin-top: 0.15em;
+  }
+
+  .prices .orig {
+    font-family: 'Inter', sans-serif; font-weight: 400;
+    font-size: {{PR_ORIG_SIZE}}; color: var(--strike-grey);
+    text-decoration: line-through; text-decoration-thickness: 1.5px;
+    opacity: 0; transition: opacity 0.3s 0.9s;
+  }
+  .slide.active .prices .orig { opacity: 1; }
+
+  .prices .disc {
+    font-family: 'Inter', sans-serif; font-weight: 700;
+    font-size: {{PR_DISC_SIZE}}; color: var(--white);
+    background: var(--coral); border-radius: 3px;
+    padding: 0.1em 0.4em;
+    opacity: 0; transition: opacity 0.3s 1.1s;
+  }
+  .slide.active .prices .disc { opacity: 1; }
+
+  /* ===========================================
+     OUTRO
+     =========================================== */
+  .outro { z-index: 10; }
+  .outro .sev-logo { margin-bottom: {{LOGO_MB}}; }
+
+  .cats { list-style: none; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .cats li {
+    font-weight: 700; font-size: {{CAT_SIZE}};
+    color: var(--black); text-transform: uppercase; line-height: 1.4;
+    opacity: 0; transform: translateX(-6px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .cats li::before { content: "• "; color: var(--coral); }
+  .cats li.it { font-weight: 500; font-style: italic; }
+  .outro.active .cats li { opacity: 1; transform: translateX(0); }
+  .outro.active .cats li:nth-child(1) { transition-delay: 0.1s; }
+  .outro.active .cats li:nth-child(2) { transition-delay: 0.2s; }
+  .outro.active .cats li:nth-child(3) { transition-delay: 0.3s; }
+  .outro.active .cats li:nth-child(4) { transition-delay: 0.4s; }
+  .outro.active .cats li:nth-child(5) { transition-delay: 0.5s; }
+
+  .tp {
+    position: absolute; bottom: {{TP_B}}; right: {{TP_R}};
+    text-align: right;
+    opacity: 0; transition: opacity 0.4s 0.6s;
+  }
+  .outro.active .tp { opacity: 1; }
+  .tp-hdr { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-bottom: 2px; }
+  .tp-star { color: var(--tp-green); font-size: {{TP_STAR}}; }
+  .tp-name { font-family: 'Inter', sans-serif; font-weight: 600; font-size: {{TP_NAME}}; color: var(--black); }
+  .tp-row { display: flex; gap: 1px; }
+  .tp-row span {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: {{TP_BOX}}; height: {{TP_BOX}};
+    background: var(--tp-green); color: white; font-size: {{TP_ICON}}; line-height: 1;
+  }
+  .tp-row .half { background: linear-gradient(90deg, var(--tp-green) 50%, #ddd 50%); }
+  .tp-sub { font-family: 'Inter', sans-serif; font-size: {{TP_SUB}}; color: var(--strike-grey); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="ad">
+  <div class="mauve-circle" id="mc"></div>
+
+  <div class="phase intro" id="intro">
+    <div class="sev-logo"><img src="{{SEV_LOGO}}" alt="Shopping Event VIP" /></div>
+    <div class="tagline">{{TAGLINE}}</div>
+    <div class="cta">DEVENIR <b>VIP</b> ☞</div>
+  </div>
+
+  <div class="sev-logo-sm" id="smLogo"><img src="{{SEV_LOGO}}" alt="SEV" /></div>
+
+  <div class="carousel" id="car">{{SLIDES}}</div>
+
+  <div class="cta-fix" id="ctaFix">DEVENIR <b>VIP</b> ☞</div>
+
+  <div class="phase outro" id="outro">
+    <div class="sev-logo"><img src="{{SEV_LOGO}}" alt="Shopping Event VIP" /></div>
+    <ul class="cats">{{CATS}}</ul>
+    <div class="tp">
+      <div class="tp-hdr"><span class="tp-star">★</span><span class="tp-name">Trustpilot</span></div>
+      <div class="tp-row"><span>★</span><span>★</span><span>★</span><span>★</span><span class="half">★</span></div>
+      <div class="tp-sub">Rated 4.4/5 by hundreds<br>of happy customers.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const INTRO_MS={{INTRO_MS}}, PROD_MS={{PROD_MS}}, OUTRO_MS={{OUTRO_MS}};
+const slides=document.querySelectorAll('.slide'),
+  intro=document.getElementById('intro'),
+  outro=document.getElementById('outro'),
+  mc=document.getElementById('mc'),
+  smLogo=document.getElementById('smLogo'),
+  ctaFix=document.getElementById('ctaFix');
+let curSlide=-1, curPhase='';
+
+function setPhase(p){
+  if(curPhase===p)return; curPhase=p;
+  intro.classList.remove('active'); outro.classList.remove('active');
+  slides.forEach(s=>{s.classList.remove('active','exit');});
+  curSlide=-1;
+  if(p==='intro'){intro.classList.add('active');mc.classList.add('visible');smLogo.classList.remove('visible');ctaFix.classList.remove('visible');}
+  else if(p==='outro'){outro.classList.add('active');smLogo.classList.remove('visible');ctaFix.classList.add('visible');}
+}
+
+function setSlide(i){
+  if(curSlide===i)return;
+  intro.classList.remove('active'); outro.classList.remove('active'); curPhase='prod';
+  slides.forEach((s,j)=>{
+    if(j===i){s.classList.remove('exit');s.classList.add('active');}
+    else if(j===curSlide){s.classList.remove('active');s.classList.add('exit');}
+    else{s.classList.remove('active','exit');}
+  });
+  curSlide=i; smLogo.classList.add('visible'); ctaFix.classList.add('visible');
+}
+
+const tl=[];let t=0;
+tl.push({ms:0,fn:()=>{mc.classList.add('visible');setPhase('intro');}});
+t=INTRO_MS;
+for(let i=0;i<slides.length;i++){const idx=i;tl.push({ms:t,fn:()=>setSlide(idx)});t+=PROD_MS;}
+tl.push({ms:t,fn:()=>setPhase('outro')});
+
+let last=-1;
+window.setTime=function(ms){for(const e of tl)if(e.ms<=ms&&e.ms>last)e.fn();last=ms;};
+
+window._auto=true;
+if(window._auto){const s=performance.now();(function tick(){window.setTime(performance.now()-s);if(performance.now()-s<t+OUTRO_MS)requestAnimationFrame(tick);})();}
+</script>
+</body>
+</html>

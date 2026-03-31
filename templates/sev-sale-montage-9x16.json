@@ -1,0 +1,668 @@
+{
+  "output_format": "mp4",
+  "width": 1080,
+  "height": 1920,
+  "duration": 18,
+  "fill_color": "#0F0F0E",
+  "elements": [
+
+    {
+      "type": "composition",
+      "name": "intro",
+      "track": 1,
+      "time": 0,
+      "duration": 3,
+      "animations": [
+        { "type": "fade", "duration": 0.6 }
+      ],
+      "elements": [
+        {
+          "type": "shape",
+          "fill_color": "#F7F5F4",
+          "width": "100%",
+          "height": "100%"
+        },
+        {
+          "type": "image",
+          "name": "logo",
+          "source": "https://www.shoppingeventvip.com/cdn/shop/files/logo_1.png?v=1667984101",
+          "x": "50%",
+          "y": "28%",
+          "width": "55%",
+          "height": "12%",
+          "fit": "contain",
+          "animations": [
+            { "type": "scale", "start_scale": "80%", "duration": 0.8, "easing": "cubic-out" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "50%",
+          "y": "42%",
+          "width": "30%",
+          "height": "2px",
+          "fill_color": "#BEA69E"
+        },
+        {
+          "type": "text",
+          "name": "brand-name",
+          "text": "TIMBERLAND",
+          "font_family": "Zodiak",
+          "font_weight": "500",
+          "font_size": "7.5 vmin",
+          "fill_color": "#0F0F0E",
+          "x": "50%",
+          "y": "52%",
+          "letter_spacing": "10",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "text-slide", "duration": 0.6, "easing": "cubic-out" }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "sale-label",
+          "text": "EXCLUSIVE SALE",
+          "font_family": "Montserrat",
+          "font_weight": "600",
+          "font_size": "3.5 vmin",
+          "fill_color": "#BEA69E",
+          "x": "50%",
+          "y": "60%",
+          "letter_spacing": "6",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "fade", "duration": 0.5, "delay": 0.4 }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "discount-main",
+          "text": "UP TO 69% OFF",
+          "font_family": "Montserrat",
+          "font_weight": "800",
+          "font_size": "6 vmin",
+          "fill_color": "#BE615C",
+          "x": "50%",
+          "y": "70%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "scale", "start_scale": "0%", "duration": 0.4, "delay": 0.8, "easing": "back-out" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "composition",
+      "name": "product-1",
+      "track": 1,
+      "time": 3,
+      "duration": 3,
+      "animations": [
+        { "type": "slide", "direction": "left", "fade": true, "duration": 0.4 }
+      ],
+      "elements": [
+        {
+          "type": "shape",
+          "fill_color": "#FFFFFF",
+          "width": "100%",
+          "height": "100%"
+        },
+        {
+          "type": "image",
+          "name": "product-image-1",
+          "x": "50%",
+          "y": "33%",
+          "width": "80%",
+          "height": "50%",
+          "fit": "contain",
+          "animations": [
+            { "type": "scale", "start_scale": "90%", "duration": 2.5, "easing": "linear" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "50%",
+          "y": "67%",
+          "width": "100%",
+          "height": "34%",
+          "fill_color": "#F7F5F4"
+        },
+        {
+          "type": "text",
+          "name": "product-title-1",
+          "text": "Product Name",
+          "font_family": "Zodiak",
+          "font_weight": "500",
+          "font_size": "5.5 vmin",
+          "fill_color": "#0F0F0E",
+          "x": "50%",
+          "y": "70%",
+          "width": "85%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "text-slide", "duration": 0.4, "easing": "cubic-out" }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "product-original-1",
+          "text": "€380",
+          "font_family": "Montserrat",
+          "font_weight": "400",
+          "font_size": "4 vmin",
+          "fill_color": "#585858",
+          "x": "35%",
+          "y": "79%",
+          "text_decoration": "line-through",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        },
+        {
+          "type": "text",
+          "name": "product-price-1",
+          "text": "€119",
+          "font_family": "Montserrat",
+          "font_weight": "800",
+          "font_size": "6 vmin",
+          "fill_color": "#BE615C",
+          "x": "65%",
+          "y": "79%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "scale", "start_scale": "0%", "duration": 0.3, "delay": 0.3, "easing": "back-out" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "87%",
+          "y": "6%",
+          "width": "20%",
+          "height": "4.5%",
+          "fill_color": "#BE615C",
+          "border_radius": "4px"
+        },
+        {
+          "type": "text",
+          "name": "product-discount-1",
+          "text": "-69%",
+          "font_family": "Montserrat",
+          "font_weight": "700",
+          "font_size": "3.5 vmin",
+          "fill_color": "#FFFFFF",
+          "x": "87%",
+          "y": "6%",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        }
+      ]
+    },
+
+    {
+      "type": "composition",
+      "name": "product-2",
+      "track": 1,
+      "time": 6,
+      "duration": 3,
+      "animations": [
+        { "type": "slide", "direction": "left", "fade": true, "duration": 0.4 }
+      ],
+      "elements": [
+        {
+          "type": "shape",
+          "fill_color": "#FFFFFF",
+          "width": "100%",
+          "height": "100%"
+        },
+        {
+          "type": "image",
+          "name": "product-image-2",
+          "x": "50%",
+          "y": "33%",
+          "width": "80%",
+          "height": "50%",
+          "fit": "contain",
+          "animations": [
+            { "type": "scale", "start_scale": "90%", "duration": 2.5, "easing": "linear" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "50%",
+          "y": "67%",
+          "width": "100%",
+          "height": "34%",
+          "fill_color": "#F7F5F4"
+        },
+        {
+          "type": "text",
+          "name": "product-title-2",
+          "text": "Product Name",
+          "font_family": "Zodiak",
+          "font_weight": "500",
+          "font_size": "5.5 vmin",
+          "fill_color": "#0F0F0E",
+          "x": "50%",
+          "y": "70%",
+          "width": "85%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "text-slide", "duration": 0.4, "easing": "cubic-out" }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "product-original-2",
+          "text": "€200",
+          "font_family": "Montserrat",
+          "font_weight": "400",
+          "font_size": "4 vmin",
+          "fill_color": "#585858",
+          "x": "35%",
+          "y": "79%",
+          "text_decoration": "line-through",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        },
+        {
+          "type": "text",
+          "name": "product-price-2",
+          "text": "€85",
+          "font_family": "Montserrat",
+          "font_weight": "800",
+          "font_size": "6 vmin",
+          "fill_color": "#BE615C",
+          "x": "65%",
+          "y": "79%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "scale", "start_scale": "0%", "duration": 0.3, "delay": 0.3, "easing": "back-out" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "87%",
+          "y": "6%",
+          "width": "20%",
+          "height": "4.5%",
+          "fill_color": "#BE615C",
+          "border_radius": "4px"
+        },
+        {
+          "type": "text",
+          "name": "product-discount-2",
+          "text": "-57%",
+          "font_family": "Montserrat",
+          "font_weight": "700",
+          "font_size": "3.5 vmin",
+          "fill_color": "#FFFFFF",
+          "x": "87%",
+          "y": "6%",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        }
+      ]
+    },
+
+    {
+      "type": "composition",
+      "name": "product-3",
+      "track": 1,
+      "time": 9,
+      "duration": 3,
+      "animations": [
+        { "type": "slide", "direction": "left", "fade": true, "duration": 0.4 }
+      ],
+      "elements": [
+        {
+          "type": "shape",
+          "fill_color": "#FFFFFF",
+          "width": "100%",
+          "height": "100%"
+        },
+        {
+          "type": "image",
+          "name": "product-image-3",
+          "x": "50%",
+          "y": "33%",
+          "width": "80%",
+          "height": "50%",
+          "fit": "contain",
+          "animations": [
+            { "type": "scale", "start_scale": "90%", "duration": 2.5, "easing": "linear" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "50%",
+          "y": "67%",
+          "width": "100%",
+          "height": "34%",
+          "fill_color": "#F7F5F4"
+        },
+        {
+          "type": "text",
+          "name": "product-title-3",
+          "text": "Product Name",
+          "font_family": "Zodiak",
+          "font_weight": "500",
+          "font_size": "5.5 vmin",
+          "fill_color": "#0F0F0E",
+          "x": "50%",
+          "y": "70%",
+          "width": "85%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "text-slide", "duration": 0.4, "easing": "cubic-out" }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "product-original-3",
+          "text": "€150",
+          "font_family": "Montserrat",
+          "font_weight": "400",
+          "font_size": "4 vmin",
+          "fill_color": "#585858",
+          "x": "35%",
+          "y": "79%",
+          "text_decoration": "line-through",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        },
+        {
+          "type": "text",
+          "name": "product-price-3",
+          "text": "€68",
+          "font_family": "Montserrat",
+          "font_weight": "800",
+          "font_size": "6 vmin",
+          "fill_color": "#BE615C",
+          "x": "65%",
+          "y": "79%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "scale", "start_scale": "0%", "duration": 0.3, "delay": 0.3, "easing": "back-out" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "87%",
+          "y": "6%",
+          "width": "20%",
+          "height": "4.5%",
+          "fill_color": "#BE615C",
+          "border_radius": "4px"
+        },
+        {
+          "type": "text",
+          "name": "product-discount-3",
+          "text": "-55%",
+          "font_family": "Montserrat",
+          "font_weight": "700",
+          "font_size": "3.5 vmin",
+          "fill_color": "#FFFFFF",
+          "x": "87%",
+          "y": "6%",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        }
+      ]
+    },
+
+    {
+      "type": "composition",
+      "name": "product-4",
+      "track": 1,
+      "time": 12,
+      "duration": 3,
+      "animations": [
+        { "type": "slide", "direction": "left", "fade": true, "duration": 0.4 }
+      ],
+      "elements": [
+        {
+          "type": "shape",
+          "fill_color": "#FFFFFF",
+          "width": "100%",
+          "height": "100%"
+        },
+        {
+          "type": "image",
+          "name": "product-image-4",
+          "x": "50%",
+          "y": "33%",
+          "width": "80%",
+          "height": "50%",
+          "fit": "contain",
+          "animations": [
+            { "type": "scale", "start_scale": "90%", "duration": 2.5, "easing": "linear" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "50%",
+          "y": "67%",
+          "width": "100%",
+          "height": "34%",
+          "fill_color": "#F7F5F4"
+        },
+        {
+          "type": "text",
+          "name": "product-title-4",
+          "text": "Product Name",
+          "font_family": "Zodiak",
+          "font_weight": "500",
+          "font_size": "5.5 vmin",
+          "fill_color": "#0F0F0E",
+          "x": "50%",
+          "y": "70%",
+          "width": "85%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "text-slide", "duration": 0.4, "easing": "cubic-out" }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "product-original-4",
+          "text": "€200",
+          "font_family": "Montserrat",
+          "font_weight": "400",
+          "font_size": "4 vmin",
+          "fill_color": "#585858",
+          "x": "35%",
+          "y": "79%",
+          "text_decoration": "line-through",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        },
+        {
+          "type": "text",
+          "name": "product-price-4",
+          "text": "€70",
+          "font_family": "Montserrat",
+          "font_weight": "800",
+          "font_size": "6 vmin",
+          "fill_color": "#BE615C",
+          "x": "65%",
+          "y": "79%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "scale", "start_scale": "0%", "duration": 0.3, "delay": 0.3, "easing": "back-out" }
+          ]
+        },
+        {
+          "type": "shape",
+          "x": "87%",
+          "y": "6%",
+          "width": "20%",
+          "height": "4.5%",
+          "fill_color": "#BE615C",
+          "border_radius": "4px"
+        },
+        {
+          "type": "text",
+          "name": "product-discount-4",
+          "text": "-65%",
+          "font_family": "Montserrat",
+          "font_weight": "700",
+          "font_size": "3.5 vmin",
+          "fill_color": "#FFFFFF",
+          "x": "87%",
+          "y": "6%",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        }
+      ]
+    },
+
+    {
+      "type": "composition",
+      "name": "cta-ending",
+      "track": 1,
+      "time": 15,
+      "duration": 3,
+      "animations": [
+        { "type": "fade", "duration": 0.5 }
+      ],
+      "elements": [
+        {
+          "type": "shape",
+          "fill_color": "#F7F5F4",
+          "width": "100%",
+          "height": "100%"
+        },
+        {
+          "type": "image",
+          "name": "logo-end",
+          "source": "https://www.shoppingeventvip.com/cdn/shop/files/logo_1.png?v=1667984101",
+          "x": "50%",
+          "y": "25%",
+          "width": "50%",
+          "height": "10%",
+          "fit": "contain"
+        },
+        {
+          "type": "shape",
+          "x": "50%",
+          "y": "37%",
+          "width": "25%",
+          "height": "2px",
+          "fill_color": "#BEA69E"
+        },
+        {
+          "type": "text",
+          "name": "brand-name-end",
+          "text": "TIMBERLAND",
+          "font_family": "Zodiak",
+          "font_weight": "500",
+          "font_size": "6 vmin",
+          "fill_color": "#0F0F0E",
+          "x": "50%",
+          "y": "46%",
+          "letter_spacing": "8",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        },
+        {
+          "type": "text",
+          "name": "discount-end",
+          "text": "UP TO 69% OFF",
+          "font_family": "Montserrat",
+          "font_weight": "800",
+          "font_size": "7 vmin",
+          "fill_color": "#BE615C",
+          "x": "50%",
+          "y": "55%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "scale", "start_scale": "0%", "duration": 0.4, "delay": 0.3, "easing": "back-out" }
+          ]
+        },
+        {
+          "type": "shape",
+          "name": "cta-button",
+          "x": "50%",
+          "y": "68%",
+          "width": "60%",
+          "height": "7%",
+          "fill_color": "#BEA69E",
+          "border_radius": "8px",
+          "animations": [
+            { "type": "fade", "duration": 0.3, "delay": 0.6 }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "cta",
+          "text": "SHOP NOW",
+          "font_family": "Montserrat",
+          "font_weight": "700",
+          "font_size": "4 vmin",
+          "fill_color": "#FFFFFF",
+          "x": "50%",
+          "y": "68%",
+          "x_alignment": "50%",
+          "y_alignment": "50%",
+          "animations": [
+            { "type": "fade", "duration": 0.3, "delay": 0.6 }
+          ]
+        },
+        {
+          "type": "text",
+          "name": "url",
+          "text": "shoppingeventvip.com",
+          "font_family": "Montserrat",
+          "font_weight": "400",
+          "font_size": "3 vmin",
+          "fill_color": "#585858",
+          "x": "50%",
+          "y": "78%",
+          "x_alignment": "50%",
+          "y_alignment": "50%"
+        }
+      ]
+    },
+
+    {
+      "type": "shape",
+      "track": 5,
+      "time": 3,
+      "duration": 12,
+      "x": "50%",
+      "y": "96%",
+      "width": "100%",
+      "height": "8%",
+      "fill_color": "rgba(15,15,14,0.7)"
+    },
+    {
+      "type": "text",
+      "name": "bottom-bar",
+      "track": 6,
+      "time": 3,
+      "duration": 12,
+      "text": "TIMBERLAND  ·  UP TO 69% OFF  ·  LIMITED STOCK",
+      "font_family": "Montserrat",
+      "font_weight": "600",
+      "font_size": "2.5 vmin",
+      "fill_color": "#BEA69E",
+      "x": "50%",
+      "y": "96%",
+      "x_alignment": "50%",
+      "y_alignment": "50%"
+    }
+  ]
+}

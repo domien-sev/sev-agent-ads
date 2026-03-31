@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: {{WIDTH}}px;
+    height: {{HEIGHT}}px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    position: relative;
+    background: #0a0a0a;
+  }
+
+  /* === HERO IMAGES (crossfade bg) === */
+  .hero-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: {{BG_POSITION}};
+    opacity: 0;
+    transition: none;
+    transform: scale(1);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0,0,0,0.4) 0%,
+      rgba(0,0,0,0.1) 35%,
+      rgba(0,0,0,0.1) 50%,
+      rgba(0,0,0,0.5) 70%,
+      rgba(0,0,0,0.8) 100%
+    );
+  }
+
+  .content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Safe zone padding: accounts for Meta UI overlays */
+    padding: {{SAFE_TOP}} {{SAFE_SIDE}} {{SAFE_BOTTOM}};
+    opacity: 0;
+  }
+
+  /* === TOP === */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .badge {
+    font-size: {{BADGE_SIZE}};
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  .sev-logo {
+    width: {{SEV_LOGO_W}};
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  /* === CENTER === */
+  .center {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: {{CENTER_GAP}};
+  }
+
+  .event-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: {{TITLE_SIZE}};
+    font-weight: 400;
+    line-height: 1.1;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  .discount-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: {{DISC_GAP}};
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .discount-text {
+    font-size: {{DISC_TEXT_SIZE}};
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .discount-badge {
+    background: #E8652D;
+    color: #fff;
+    font-size: {{DISC_BADGE_SIZE}};
+    font-weight: 700;
+    padding: {{DISC_BADGE_PAD}};
+    border-radius: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: {{SUBTITLE_SIZE}};
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  .info {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  .date {
+    font-size: {{DATE_SIZE}};
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .location {
+    font-size: {{LOC_SIZE}};
+    font-weight: 300;
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+
+  .cta {
+    display: inline-block;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: {{CTA_SIZE}};
+    font-weight: 600;
+    padding: {{CTA_PAD}};
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  /* === BRAND LOGOS === */
+  .brands {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: {{BRAND_GAP}};
+    padding-top: {{BRAND_PT}};
+  }
+
+  .brands img {
+    height: {{BRAND_H}};
+    max-width: {{BRAND_MAX_W}};
+    object-fit: contain;
+    opacity: 0;
+    filter: brightness(10);
+    transform: translateY(10px);
+  }
+
+  .brands img.no-brighten,
+  .brand-spotlight img.no-brighten {
+    filter: none;
+  }
+
+  .more-brands {
+    font-size: {{MORE_SIZE}};
+    font-style: italic;
+    opacity: 0;
+    font-weight: 300;
+    transform: translateY(10px);
+  }
+
+  /* === BRAND SPOTLIGHT OVERLAY === */
+  .brand-spotlight {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: {{SPOT_GAP}};
+    opacity: 0;
+  }
+
+  .brand-spotlight img {
+    max-height: {{SPOT_LOGO_H}};
+    max-width: 60%;
+    object-fit: contain;
+    filter: brightness(10);
+  }
+
+  .brand-spotlight .x-mark {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: {{SPOT_X_SIZE}};
+    opacity: 0.6;
+  }
+
+  .brand-spotlight .salon-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: {{SPOT_SALON_SIZE}};
+    text-shadow: 0 2px 15px rgba(0,0,0,0.5);
+  }
+</style>
+</head>
+<body>
+
+  <!-- Hero image layers for crossfade -->
+  {{HERO_LAYERS}}
+
+  <div class="overlay"></div>
+
+  <!-- Brand spotlight overlays (shown during hero transitions) -->
+  {{BRAND_SPOTLIGHTS}}
+
+  <!-- Main content -->
+  <div class="content" id="content">
+    <div class="top">
+      <div class="badge" id="badge">Physical<br>Private<br>Sale</div>
+      <img class="sev-logo" id="sevLogo" src="{{SEV_LOGO_URL}}" alt="">
+    </div>
+
+    <div class="center">
+      <div class="event-title" id="title">Le Salon<br>VIP</div>
+      <div class="discount-line" id="discount">
+        <span class="discount-text">{{DISCOUNT_PREFIX}}</span>
+        <span class="discount-badge">-80%</span>
+        <span class="discount-text">{{DISCOUNT_SUFFIX}}</span>
+      </div>
+      <div class="subtitle" id="subtitle">{{SUBTITLE}}</div>
+      <div class="info" id="info">
+        <div class="date">11 — 26 {{MONTH}} &nbsp;|&nbsp; 11u — 17u</div>
+        <div class="location">Bleckmann, Sint-Niklaas (Belsele)</div>
+      </div>
+      <div class="cta" id="cta">{{CTA_TEXT}}</div>
+    </div>
+
+    <div class="brands" id="brands">
+      {{BRAND_LOGOS}}
+      <span class="more-brands" id="moreBrands">{{MORE_TEXT}}</span>
+    </div>
+  </div>
+
+<script>
+  // Timeline-driven animation (Puppeteer controls via setTime)
+  window._auto = {{AUTOPLAY}};
+  let _t = 0;
+
+  const HERO_COUNT = {{HERO_COUNT}};
+  const BRAND_SPOT_COUNT = {{BRAND_SPOT_COUNT}};
+
+  // Phase durations (ms) — MAX 12 seconds total
+  const PHASE = {
+    fadeIn:        250,
+    introHold:     500,
+    discountIn:    200,
+    subtitleIn:    150,
+    hold1:         300,
+    heroTransition: 200,
+    spotlightIn:   150,
+    spotlightHold: 400,
+    spotlightOut:  150,
+    heroHold:      100,
+    infoIn:        200,
+    ctaIn:         150,
+    brandsIn:      250,
+    outroHold:    1500,
+  };
+
+  // Calculate total per-hero cycle
+  const HERO_CYCLE = PHASE.heroTransition + PHASE.spotlightIn + PHASE.spotlightHold + PHASE.spotlightOut + PHASE.heroHold;
+
+  function lerp(a, b, t) { return a + (b - a) * Math.max(0, Math.min(1, t)); }
+  function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; } // easeInOut
+
+  function setTime(ms) {
+    _t = ms;
+    render();
+  }
+
+  function render() {
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => document.querySelectorAll(s);
+
+    let t = _t;
+
+    // --- Phase 1: Fade in content + first hero ---
+    const fadeInEnd = PHASE.fadeIn;
+    const fadeP = ease(Math.min(1, t / PHASE.fadeIn));
+
+    // First hero — always visible (no black first frame)
+    const heroes = $$('.hero-layer');
+    if (heroes[0]) {
+      heroes[0].style.opacity = '1';
+      heroes[0].style.transform = `scale(${lerp(1.05, 1, fadeP)})`;
+    }
+
+    // Content container fades in over hero
+    $('#content').style.opacity = String(fadeP);
+
+    // Badge + logo slide in
+    const introStart = fadeInEnd;
+    const introP = ease(Math.max(0, Math.min(1, (t - introStart) / 500)));
+    $('#badge').style.opacity = String(introP);
+    $('#badge').style.transform = `translateX(${lerp(-20, 0, introP)}px)`;
+    $('#sevLogo').style.opacity = String(introP * 0.85);
+    $('#sevLogo').style.transform = `translateX(${lerp(20, 0, introP)}px)`;
+
+    // Title scale in
+    const titleP = ease(Math.max(0, Math.min(1, (t - introStart) / 700)));
+    $('#title').style.opacity = String(titleP);
+    $('#title').style.transform = `scale(${lerp(0.8, 1, titleP)})`;
+
+    // --- Phase 2: Discount + subtitle ---
+    const discStart = introStart + PHASE.introHold;
+    const discP = ease(Math.max(0, Math.min(1, (t - discStart) / PHASE.discountIn)));
+    $('#discount').style.opacity = String(discP);
+    $('#discount').style.transform = `translateY(${lerp(20, 0, discP)}px)`;
+
+    const subStart = discStart + PHASE.discountIn;
+    const subP = ease(Math.max(0, Math.min(1, (t - subStart) / PHASE.subtitleIn)));
+    $('#subtitle').style.opacity = String(subP * 0.85);
+    $('#subtitle').style.transform = `translateY(${lerp(15, 0, subP)}px)`;
+
+    // --- Phase 3: Hero cycling with brand spotlights ---
+    const cycleStart = subStart + PHASE.subtitleIn + PHASE.hold1;
+    const cycleEnd = cycleStart + Math.max(0, HERO_COUNT - 1) * HERO_CYCLE;
+
+    // Fade OUT center content when entering hero cycle phase
+    const contentFadeOutDur = 500;
+    const contentFadeOutP = ease(Math.max(0, Math.min(1, (t - cycleStart + contentFadeOutDur) / contentFadeOutDur)));
+    // Fade IN content for outro
+    const contentFadeInP = ease(Math.max(0, Math.min(1, (t - cycleEnd) / 500)));
+
+    // During cycle phase: hide title, discount, subtitle
+    if (t >= cycleStart - contentFadeOutDur && t < cycleEnd) {
+      const hideP = 1 - contentFadeOutP; // fades to 0
+      $('#title').style.opacity = String(Math.min(titleP, hideP));
+      $('#discount').style.opacity = String(Math.min(discP, hideP));
+      $('#subtitle').style.opacity = String(Math.min(subP * 0.85, hideP));
+    }
+    // After cycle: bring back for outro
+    if (t >= cycleEnd) {
+      $('#title').style.opacity = String(contentFadeInP);
+      $('#title').style.transform = `scale(1)`;
+      $('#discount').style.opacity = String(contentFadeInP);
+      $('#discount').style.transform = `translateY(0px)`;
+      $('#subtitle').style.opacity = String(contentFadeInP * 0.85);
+      $('#subtitle').style.transform = `translateY(0px)`;
+    }
+
+    for (let i = 1; i < HERO_COUNT; i++) {
+      const cStart = cycleStart + (i - 1) * HERO_CYCLE;
+      if (!heroes[i]) continue;
+
+      // Hero crossfade
+      const hFadeP = ease(Math.max(0, Math.min(1, (t - cStart) / PHASE.heroTransition)));
+      heroes[i].style.opacity = String(hFadeP);
+      // Ken Burns: slow zoom during hold
+      const zoomT = Math.max(0, Math.min(1, (t - cStart) / HERO_CYCLE));
+      heroes[i].style.transform = `scale(${lerp(1.08, 1, zoomT)})`;
+
+      // Previous hero: subtle zoom continues
+      if (heroes[i-1]) {
+        const prevZoom = lerp(1, 0.98, hFadeP);
+        heroes[i-1].style.transform = `scale(${prevZoom})`;
+      }
+
+      // Brand spotlight — only visible when center content is hidden
+      const spots = $$('.brand-spotlight');
+      if (spots[i-1]) {
+        const sIn = cStart + PHASE.heroTransition * 0.5;
+        const sInP = ease(Math.max(0, Math.min(1, (t - sIn) / PHASE.spotlightIn)));
+        const sOutStart = sIn + PHASE.spotlightIn + PHASE.spotlightHold;
+        const sOutP = ease(Math.max(0, Math.min(1, (t - sOutStart) / PHASE.spotlightOut)));
+        spots[i-1].style.opacity = String(sInP * (1 - sOutP));
+      }
+    }
+
+    // --- Phase 4: Outro (info, CTA, brands) ---
+    const outroStart = cycleEnd;
+
+    const infoP = ease(Math.max(0, Math.min(1, (t - outroStart) / PHASE.infoIn)));
+    $('#info').style.opacity = String(infoP);
+    $('#info').style.transform = `translateY(${lerp(15, 0, infoP)}px)`;
+
+    const ctaStart = outroStart + PHASE.infoIn;
+    const ctaP = ease(Math.max(0, Math.min(1, (t - ctaStart) / PHASE.ctaIn)));
+    $('#cta').style.opacity = String(ctaP);
+    $('#cta').style.transform = `translateY(${lerp(15, 0, ctaP)}px)`;
+
+    const brandsStart = ctaStart + PHASE.ctaIn;
+    const brandImgs = $$('#brands img');
+    const moreTxt = $('#moreBrands');
+    brandImgs.forEach((img, i) => {
+      const bP = ease(Math.max(0, Math.min(1, (t - brandsStart - i * 80) / 400)));
+      img.style.opacity = String(bP * 0.9);
+      img.style.transform = `translateY(${lerp(10, 0, bP)}px)`;
+    });
+    if (moreTxt) {
+      const mP = ease(Math.max(0, Math.min(1, (t - brandsStart - brandImgs.length * 80) / 400)));
+      moreTxt.style.opacity = String(mP * 0.7);
+      moreTxt.style.transform = `translateY(${lerp(10, 0, mP)}px)`;
+    }
+  }
+
+  window.setTime = setTime;
+
+  // Auto-play for preview
+  if (window._auto) {
+    const TOTAL = {{TOTAL_MS}};
+    let start = null;
+    function tick(ts) {
+      if (!start) start = ts;
+      setTime(ts - start);
+      if (ts - start < TOTAL) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+</script>
+</body>
+</html>

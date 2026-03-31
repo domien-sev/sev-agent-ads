@@ -1,6 +1,7 @@
 import type { RoutedMessage, AgentResponse } from "@domien-sev/shared-types";
 import type { AdsAgent } from "../agent.js";
 import { syncProducts } from "../pipeline/ingest.js";
+import { scoreProducts } from "../pipeline/creative-scorer.js";
 import { generateBrief } from "../pipeline/brief.js";
 import { generateTemplateImages, generateAIImages, generatePremiumImages } from "../pipeline/image.js";
 import { generateTemplateVideos, generateProductVideos, generateAIVideos } from "../pipeline/video.js";
@@ -101,8 +102,11 @@ export async function handleGenerate(
     };
   }
 
+  // Score and rank products by creative potential
+  const scoredProducts = await scoreProducts(agent, allProducts);
+
   // Paginate
-  const page = allProducts.slice(offset, offset + PAGE_SIZE);
+  const page = scoredProducts.slice(offset, offset + PAGE_SIZE);
 
   if (page.length === 0) {
     agent.lastQuery = "";
@@ -118,7 +122,7 @@ export async function handleGenerate(
   // Save pagination state
   agent.lastQuery = productQuery;
   agent.lastOffset = offset + page.length;
-  agent.lastTotalMatches = allProducts.length;
+  agent.lastTotalMatches = scoredProducts.length;
 
   // Generate for this page
   const results: string[] = [];
@@ -141,14 +145,15 @@ export async function handleGenerate(
       templateVideos.length + productVideos.length + aiVideos.length;
     totalCreatives += count;
 
-    results.push(`*${product.title}:* ${count} creatives (${templateImages.length} template img, ${aiImages.length} AI img, ${premiumImages.length} premium img, ${templateVideos.length} template vid, ${productVideos.length} product vid, ${aiVideos.length} AI vid)`);
+    const scoreTag = "_score" in product ? ` [score: ${product._score.score}/100, ${product._score.priority}]` : "";
+    results.push(`*${product.title}:*${scoreTag} ${count} creatives (${templateImages.length} template img, ${aiImages.length} AI img, ${premiumImages.length} premium img, ${templateVideos.length} template vid, ${productVideos.length} product vid, ${aiVideos.length} AI vid)`);
   }
 
   // Review queue
   const review = await processReviewQueue(agent);
   const reviewMsg = buildReviewSlackMessage(review.creatives.filter((c) => c.status === "review"));
 
-  const remaining = allProducts.length - agent.lastOffset;
+  const remaining = scoredProducts.length - agent.lastOffset;
   const paginationMsg = remaining > 0
     ? `\n_${remaining} more product(s) matching "${productQuery}" — type \`generate more\` to continue._`
     : "";
@@ -157,7 +162,7 @@ export async function handleGenerate(
     channel_id: message.channel_id,
     thread_ts: message.thread_ts ?? message.ts,
     text: [
-      `Generated ${totalCreatives} creatives for ${page.length} of ${allProducts.length} product(s) (batch ${Math.ceil(offset / PAGE_SIZE) + 1}):`,
+      `Generated ${totalCreatives} creatives for ${page.length} of ${scoredProducts.length} product(s) (batch ${Math.ceil(offset / PAGE_SIZE) + 1}, ranked by creative potential):`,
       "",
       ...results,
       "",

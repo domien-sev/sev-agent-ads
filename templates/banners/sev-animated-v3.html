@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #F4F2EA;
+    --mauve: #B5A196;
+    --coral: #F07068;
+    --black: #1A1A1A;
+    --white: #FFFFFF;
+    --grey-light: #D7D0CA;
+    --strike-grey: #999;
+    --trustpilot-green: #00B67A;
+  }
+
+  body {
+    width: {{WIDTH}}px;
+    height: {{HEIGHT}}px;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Oswald', sans-serif;
+  }
+
+  .banner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ==========================================
+     MAUVE CIRCLE
+     ========================================== */
+  .mauve-circle {
+    position: absolute;
+    width: 65%;
+    height: 0;
+    padding-bottom: 65%;
+    border-radius: 50%;
+    background: var(--mauve);
+    right: -12%;
+    top: -5%;
+    opacity: 0;
+    transition: opacity 0.6s, transform 0.6s;
+    transform: translateX(40px);
+  }
+
+  .mauve-circle.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ==========================================
+     PHASE: INTRO
+     ========================================== */
+  .phase { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+  .phase.active { opacity: 1; pointer-events: auto; }
+
+  .intro {
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: 5% 6%;
+  }
+
+  .sev-logo {
+    width: 42%;
+    margin-bottom: 4%;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.4s 0.1s, transform 0.4s 0.1s;
+  }
+
+  .intro.active .sev-logo,
+  .outro.active .sev-logo {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .sev-logo img { width: 100%; height: auto; }
+
+  .tagline {
+    font-weight: 700;
+    font-size: {{TAGLINE_SIZE}};
+    color: var(--black);
+    text-transform: uppercase;
+    line-height: 1.05;
+    max-width: 75%;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s 0.3s, transform 0.5s 0.3s;
+    flex: 1;
+  }
+
+  .intro.active .tagline {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--coral);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{CTA_SIZE}};
+    padding: {{CTA_PADDING}};
+    border-radius: 4px;
+    width: fit-content;
+    opacity: 0;
+    transform: scaleY(0.3);
+    transform-origin: bottom;
+    transition: opacity 0.35s 0.8s, transform 0.35s 0.8s;
+  }
+
+  .intro.active .cta-btn {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  /* ==========================================
+     PERSISTENT CTA — bottom
+     ========================================== */
+  .cta-persistent {
+    position: absolute;
+    bottom: 4%;
+    left: 5%;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--coral);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{CTA_SMALL_SIZE}};
+    padding: {{CTA_SMALL_PAD}};
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .cta-persistent.visible { opacity: 1; }
+
+  /* ==========================================
+     SMALL SEV LOGO — top-right during products
+     ========================================== */
+  .sev-logo-small {
+    position: absolute;
+    top: 4%;
+    right: 4%;
+    width: {{SMALL_LOGO_W}};
+    z-index: 15;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .sev-logo-small.visible { opacity: 1; }
+  .sev-logo-small img { width: 100%; height: auto; }
+
+  /* ==========================================
+     PRODUCT SLIDES
+     ========================================== */
+  .product-carousel {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.35s, transform 0.35s;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .slide.exit {
+    opacity: 0;
+    transform: translateX(-15px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  /* Product image — centered */
+  .slide .product-img {
+    position: absolute;
+    left: 50%;
+    bottom: 16%;
+    transform: translateX(-50%);
+    max-height: 62%;
+    max-width: 48%;
+    object-fit: contain;
+    z-index: 6;
+    /* Remove white backgrounds via blend mode */
+    mix-blend-mode: multiply;
+  }
+
+  /* Brand logo — top-left */
+  .slide .brand-logo {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    max-height: {{BRAND_LOGO_H}};
+    max-width: {{BRAND_LOGO_W}};
+    object-fit: contain;
+    z-index: 8;
+    opacity: 0;
+    transition: opacity 0.3s 0.2s;
+  }
+
+  .slide.active .brand-logo { opacity: 0.85; }
+
+  /* Price block */
+  .slide .price-block {
+    position: absolute;
+    left: 5%;
+    top: 40%;
+    z-index: 8;
+  }
+
+  .price-sale {
+    font-weight: 700;
+    font-size: {{PRICE_SALE_SIZE}};
+    color: var(--coral);
+    line-height: 1;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s 0.4s, transform 0.3s 0.4s;
+  }
+
+  .slide.active .price-sale {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .price-original {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: {{PRICE_ORIG_SIZE}};
+    color: var(--strike-grey);
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+    opacity: 0;
+    transition: opacity 0.3s 1.0s;
+  }
+
+  .slide.active .price-original { opacity: 1; }
+
+  .price-discount {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: {{PRICE_DISC_SIZE}};
+    color: var(--black);
+    opacity: 0;
+    transition: opacity 0.3s 1.2s;
+  }
+
+  .slide.active .price-discount { opacity: 0.7; }
+
+  /* ==========================================
+     OUTRO
+     ========================================== */
+  .outro {
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: 5% 6%;
+  }
+
+  .outro .sev-logo { margin-bottom: 3%; }
+
+  .category-list {
+    list-style: none;
+    flex: 1;
+  }
+
+  .category-list li {
+    font-weight: 700;
+    font-size: {{CAT_SIZE}};
+    color: var(--black);
+    text-transform: uppercase;
+    line-height: 1.35;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .outro.active .category-list li {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Stagger category items */
+  .outro.active .category-list li:nth-child(1) { transition-delay: 0.1s; }
+  .outro.active .category-list li:nth-child(2) { transition-delay: 0.2s; }
+  .outro.active .category-list li:nth-child(3) { transition-delay: 0.3s; }
+  .outro.active .category-list li:nth-child(4) { transition-delay: 0.4s; }
+  .outro.active .category-list li:nth-child(5) { transition-delay: 0.5s; }
+
+  .category-list li::before {
+    content: "• ";
+    color: var(--coral);
+  }
+
+  .category-list li.last-cat {
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  .trustpilot {
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+    text-align: right;
+    opacity: 0;
+    transition: opacity 0.4s 0.6s;
+  }
+
+  .outro.active .trustpilot { opacity: 1; }
+
+  .tp-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .tp-star-label { color: var(--trustpilot-green); font-size: {{TP_STAR_SIZE}}; }
+  .tp-name { font-family: 'Inter', sans-serif; font-weight: 600; font-size: {{TP_NAME_SIZE}}; color: var(--black); }
+
+  .tp-stars { display: flex; gap: 1px; }
+
+  .tp-stars span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: {{TP_BOX_SIZE}};
+    height: {{TP_BOX_SIZE}};
+    background: var(--trustpilot-green);
+    color: white;
+    font-size: {{TP_BOX_FONT}};
+    line-height: 1;
+  }
+
+  .tp-stars span.half {
+    background: linear-gradient(90deg, var(--trustpilot-green) 50%, #ddd 50%);
+  }
+
+  .tp-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: {{TP_SUB_SIZE}};
+    color: var(--strike-grey);
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+
+  <div class="mauve-circle" id="mauve"></div>
+
+  <!-- INTRO -->
+  <div class="phase intro" id="intro">
+    <div class="sev-logo"><img src="{{SEV_LOGO_URL}}" alt="Shopping Event VIP" /></div>
+    <div class="tagline">{{TAGLINE}}</div>
+    <div class="cta-btn">DEVENIR <b>VIP</b> ☞</div>
+  </div>
+
+  <!-- Small SEV logo -->
+  <div class="sev-logo-small" id="sevSmall"><img src="{{SEV_LOGO_URL}}" alt="SEV" /></div>
+
+  <!-- PRODUCTS -->
+  <div class="product-carousel" id="carousel">
+    {{PRODUCT_SLIDES}}
+  </div>
+
+  <!-- Persistent CTA -->
+  <div class="cta-persistent" id="ctaPersist">DEVENIR <b>VIP</b> ☞</div>
+
+  <!-- OUTRO -->
+  <div class="phase outro" id="outro">
+    <div class="sev-logo"><img src="{{SEV_LOGO_URL}}" alt="Shopping Event VIP" /></div>
+    <ul class="category-list">
+      {{CATEGORY_LIST}}
+    </ul>
+    <div class="trustpilot">
+      <div class="tp-header">
+        <span class="tp-star-label">★</span>
+        <span class="tp-name">Trustpilot</span>
+      </div>
+      <div class="tp-stars">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span class="half">★</span>
+      </div>
+      <div class="tp-sub">Rated 4.4/5 by hundreds<br>of happy customers.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Timeline driven by setTime(ms) — called externally by Puppeteer for frame-perfect sync
+  // Falls back to real-time setTimeout when not controlled externally
+  const INTRO_HOLD = {{INTRO_HOLD_MS}};
+  const PRODUCT_DURATION = {{PRODUCT_DURATION_MS}};
+  const OUTRO_HOLD = {{OUTRO_HOLD_MS}};
+
+  const slides = document.querySelectorAll('.slide');
+  const intro = document.getElementById('intro');
+  const outro = document.getElementById('outro');
+  const mauve = document.getElementById('mauve');
+  const sevSmall = document.getElementById('sevSmall');
+  const ctaPersist = document.getElementById('ctaPersist');
+
+  let currentSlide = -1;
+  let currentPhase = '';
+
+  function showPhase(phase) {
+    if (currentPhase === phase) return;
+    currentPhase = phase;
+
+    intro.classList.remove('active');
+    outro.classList.remove('active');
+    slides.forEach(s => { s.classList.remove('active'); s.classList.remove('exit'); });
+    currentSlide = -1;
+
+    if (phase === 'intro') {
+      intro.classList.add('active');
+      mauve.classList.add('visible');
+      sevSmall.classList.remove('visible');
+      ctaPersist.classList.remove('visible');
+    } else if (phase === 'outro') {
+      outro.classList.add('active');
+      sevSmall.classList.remove('visible');
+      ctaPersist.classList.add('visible');
+    }
+  }
+
+  function showSlide(index) {
+    if (currentSlide === index) return;
+
+    intro.classList.remove('active');
+    outro.classList.remove('active');
+    currentPhase = 'products';
+
+    // Exit previous
+    slides.forEach((s, i) => {
+      if (i === index) {
+        s.classList.remove('exit');
+        s.classList.add('active');
+      } else if (i === currentSlide) {
+        s.classList.remove('active');
+        s.classList.add('exit');
+      } else {
+        s.classList.remove('active');
+        s.classList.remove('exit');
+      }
+    });
+
+    currentSlide = index;
+    sevSmall.classList.add('visible');
+    ctaPersist.classList.add('visible');
+  }
+
+  // Build timeline as array of {ms, action}
+  const timeline = [];
+  let t = 0;
+
+  timeline.push({ ms: 0, action: () => { mauve.classList.add('visible'); showPhase('intro'); } });
+  t = INTRO_HOLD;
+
+  for (let i = 0; i < slides.length; i++) {
+    const idx = i;
+    timeline.push({ ms: t, action: () => showSlide(idx) });
+    t += PRODUCT_DURATION;
+  }
+
+  timeline.push({ ms: t, action: () => showPhase('outro') });
+
+  // Manual time control — Puppeteer calls window.setTime(ms)
+  let lastAppliedMs = -1;
+  window.setTime = function(ms) {
+    // Apply all timeline events up to this time
+    for (const entry of timeline) {
+      if (entry.ms <= ms && entry.ms > lastAppliedMs) {
+        entry.action();
+      }
+    }
+    lastAppliedMs = ms;
+  };
+
+  // Auto-play fallback (for browser preview / debug)
+  window._autoplay = true;
+  if (window._autoplay) {
+    const startTime = performance.now();
+    function tick() {
+      const elapsed = performance.now() - startTime;
+      window.setTime(elapsed);
+      if (elapsed < t + OUTRO_HOLD) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+</script>
+</body>
+</html>

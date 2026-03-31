@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #F4F2EA;
+    --black: #0E0E0E;
+    --red: #D93328;
+    --red-light: #FF6A68;
+    --white: #FFFFFF;
+    --grey: #D7D7E2;
+    --green: #00B67A;
+    --green-dark: #204729;
+  }
+
+  body {
+    width: {{WIDTH}}px;
+    height: {{HEIGHT}}px;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .banner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Product image — fills ~45% of banner */
+  .product-image {
+    position: absolute;
+    object-fit: cover;
+    object-position: center;
+    z-index: 1;
+  }
+
+  /* Dark overlay strip for text */
+  .text-panel {
+    position: absolute;
+    background: var(--black);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: {{PANEL_PADDING}};
+  }
+
+  /* Red accent bar */
+  .accent-bar {
+    position: absolute;
+    background: linear-gradient(180deg, var(--red) 0%, var(--red-light) 100%);
+    z-index: 3;
+  }
+
+  .brand-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{BRAND_FONT_SIZE}};
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0.7;
+    line-height: 1.2;
+  }
+
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: {{HEADLINE_FONT_SIZE}};
+    color: var(--white);
+    line-height: 1.1;
+    margin: {{HEADLINE_MARGIN}};
+  }
+
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: {{PRICE_GAP}};
+    margin-top: {{PRICE_MARGIN_TOP}};
+  }
+
+  .price-original {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: {{PRICE_ORIGINAL_SIZE}};
+    color: var(--grey);
+    text-decoration: line-through;
+  }
+
+  .price-sale {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{PRICE_SALE_SIZE}};
+    color: var(--red-light);
+  }
+
+  .discount-badge {
+    position: absolute;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{BADGE_FONT_SIZE}};
+    border-radius: 50%;
+    width: {{BADGE_SIZE}};
+    height: {{BADGE_SIZE}};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    line-height: 1;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: {{CTA_FONT_SIZE}};
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: {{CTA_PADDING}};
+    border-radius: 2px;
+    margin-top: {{CTA_MARGIN_TOP}};
+    width: fit-content;
+  }
+
+  .sev-logo {
+    position: absolute;
+    z-index: 4;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: var(--black);
+    font-size: {{LOGO_FONT_SIZE}};
+    letter-spacing: 0.05em;
+  }
+
+  .trustpilot {
+    position: absolute;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .trustpilot .stars {
+    color: var(--green);
+    font-size: {{TRUST_FONT_SIZE}};
+    letter-spacing: 1px;
+  }
+
+  .trustpilot .label {
+    font-family: 'Inter', sans-serif;
+    font-size: {{TRUST_LABEL_SIZE}};
+    font-weight: 600;
+    color: var(--green-dark);
+  }
+
+  /* ============================================
+     LAYOUT VARIANTS — applied via .layout-* class
+     ============================================ */
+
+  /* --- 300x250 (Medium Rectangle) --- */
+  .layout-300x250 .product-image { top: 0; left: 0; width: 45%; height: 100%; }
+  .layout-300x250 .text-panel { top: 0; right: 0; width: 55%; height: 100%; padding: 16px; }
+  .layout-300x250 .accent-bar { top: 0; left: 45%; width: 3px; height: 100%; }
+  .layout-300x250 .discount-badge { top: 8px; left: 8px; }
+  .layout-300x250 .sev-logo { bottom: 8px; left: 8px; }
+  .layout-300x250 .trustpilot { bottom: 8px; right: 16px; }
+
+  /* --- 728x90 (Leaderboard) --- */
+  .layout-728x90 .product-image { top: 0; left: 0; width: 90px; height: 100%; }
+  .layout-728x90 .text-panel { top: 0; left: 90px; width: calc(100% - 90px); height: 100%; padding: 8px 16px; flex-direction: row; align-items: center; gap: 16px; }
+  .layout-728x90 .accent-bar { top: 0; left: 90px; width: 3px; height: 100%; }
+  .layout-728x90 .discount-badge { top: 4px; left: 4px; }
+  .layout-728x90 .sev-logo { top: 8px; right: 16px; }
+  .layout-728x90 .trustpilot { bottom: 6px; right: 16px; }
+  .layout-728x90 .text-content { flex: 1; }
+  .layout-728x90 .cta-wrap { display: flex; align-items: center; }
+
+  /* --- 160x600 (Wide Skyscraper) --- */
+  .layout-160x600 .product-image { top: 0; left: 0; width: 100%; height: 40%; }
+  .layout-160x600 .text-panel { bottom: 0; left: 0; width: 100%; height: 60%; padding: 12px; }
+  .layout-160x600 .accent-bar { top: 40%; left: 0; width: 100%; height: 3px; }
+  .layout-160x600 .discount-badge { top: 8px; right: 8px; }
+  .layout-160x600 .sev-logo { top: 8px; left: 8px; }
+  .layout-160x600 .trustpilot { bottom: 8px; left: 12px; }
+
+  /* --- 970x250 (Billboard) --- */
+  .layout-970x250 .product-image { top: 0; left: 0; width: 250px; height: 100%; }
+  .layout-970x250 .text-panel { top: 0; left: 250px; width: calc(100% - 250px); height: 100%; padding: 20px 28px; flex-direction: row; align-items: center; gap: 24px; }
+  .layout-970x250 .accent-bar { top: 0; left: 250px; width: 3px; height: 100%; }
+  .layout-970x250 .discount-badge { top: 10px; left: 10px; }
+  .layout-970x250 .sev-logo { top: 12px; right: 24px; }
+  .layout-970x250 .trustpilot { bottom: 12px; right: 24px; }
+  .layout-970x250 .text-content { flex: 1; }
+  .layout-970x250 .cta-wrap { display: flex; align-items: center; }
+
+  /* --- 300x600 (Half Page) --- */
+  .layout-300x600 .product-image { top: 0; left: 0; width: 100%; height: 45%; }
+  .layout-300x600 .text-panel { bottom: 0; left: 0; width: 100%; height: 55%; padding: 16px; }
+  .layout-300x600 .accent-bar { top: 45%; left: 0; width: 100%; height: 3px; }
+  .layout-300x600 .discount-badge { top: 10px; right: 10px; }
+  .layout-300x600 .sev-logo { top: 10px; left: 10px; }
+  .layout-300x600 .trustpilot { bottom: 10px; left: 16px; }
+
+  /* --- 320x100 (Large Mobile Banner) --- */
+  .layout-320x100 .product-image { top: 0; left: 0; width: 100px; height: 100%; }
+  .layout-320x100 .text-panel { top: 0; left: 100px; width: calc(100% - 100px); height: 100%; padding: 6px 10px; flex-direction: row; align-items: center; gap: 8px; }
+  .layout-320x100 .accent-bar { top: 0; left: 100px; width: 2px; height: 100%; }
+  .layout-320x100 .discount-badge { top: 4px; left: 4px; }
+  .layout-320x100 .sev-logo { display: none; }
+  .layout-320x100 .trustpilot { display: none; }
+  .layout-320x100 .text-content { flex: 1; }
+  .layout-320x100 .cta-wrap { display: flex; align-items: center; }
+
+  /* --- Square formats (200x200, 250x250, 336x280) --- */
+  .layout-square .product-image { top: 0; left: 0; width: 100%; height: 50%; }
+  .layout-square .text-panel { bottom: 0; left: 0; width: 100%; height: 50%; padding: 10px; }
+  .layout-square .accent-bar { top: 50%; left: 0; width: 100%; height: 3px; }
+  .layout-square .discount-badge { top: 6px; right: 6px; }
+  .layout-square .sev-logo { top: 6px; left: 6px; }
+  .layout-square .trustpilot { display: none; }
+
+  /* --- Horizontal slim (468x60, 120x600) — similar to leaderboard --- */
+  .layout-slim-h .product-image { top: 0; left: 0; width: 60px; height: 100%; }
+  .layout-slim-h .text-panel { top: 0; left: 60px; width: calc(100% - 60px); height: 100%; padding: 4px 10px; flex-direction: row; align-items: center; gap: 8px; }
+  .layout-slim-h .accent-bar { top: 0; left: 60px; width: 2px; height: 100%; }
+  .layout-slim-h .discount-badge { display: none; }
+  .layout-slim-h .sev-logo { display: none; }
+  .layout-slim-h .trustpilot { display: none; }
+  .layout-slim-h .text-content { flex: 1; }
+  .layout-slim-h .cta-wrap { display: flex; align-items: center; }
+
+  /* --- 120x600 (Skyscraper) --- */
+  .layout-120x600 .product-image { top: 0; left: 0; width: 100%; height: 35%; }
+  .layout-120x600 .text-panel { bottom: 0; left: 0; width: 100%; height: 65%; padding: 8px; }
+  .layout-120x600 .accent-bar { top: 35%; left: 0; width: 100%; height: 2px; }
+  .layout-120x600 .discount-badge { top: 4px; right: 4px; }
+  .layout-120x600 .sev-logo { top: 4px; left: 4px; }
+  .layout-120x600 .trustpilot { display: none; }
+
+  /* --- Wide banners (930x180, 970x90) --- */
+  .layout-wide .product-image { top: 0; left: 0; width: 180px; height: 100%; }
+  .layout-wide .text-panel { top: 0; left: 180px; width: calc(100% - 180px); height: 100%; padding: 12px 20px; flex-direction: row; align-items: center; gap: 16px; }
+  .layout-wide .accent-bar { top: 0; left: 180px; width: 3px; height: 100%; }
+  .layout-wide .discount-badge { top: 6px; left: 6px; }
+  .layout-wide .sev-logo { top: 8px; right: 16px; }
+  .layout-wide .trustpilot { bottom: 6px; right: 16px; }
+  .layout-wide .text-content { flex: 1; }
+  .layout-wide .cta-wrap { display: flex; align-items: center; }
+</style>
+</head>
+<body>
+<div class="banner layout-{{LAYOUT}}">
+
+  <img class="product-image" src="{{PRODUCT_IMAGE}}" alt="{{PRODUCT_NAME}}" />
+
+  <div class="accent-bar"></div>
+
+  <div class="discount-badge">-{{DISCOUNT_PCT}}%</div>
+
+  <div class="text-panel">
+    <div class="text-content">
+      <div class="brand-label">{{BRAND_NAME}}</div>
+      <div class="headline">{{PRODUCT_NAME}}</div>
+      <div class="price-row">
+        <span class="price-original">{{PRICE_ORIGINAL}}</span>
+        <span class="price-sale">{{PRICE_SALE}}</span>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <div class="cta">{{CTA_TEXT}}</div>
+    </div>
+  </div>
+
+  <div class="sev-logo">SEV</div>
+
+  <div class="trustpilot">
+    <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+    <span class="label">Trustpilot</span>
+  </div>
+
+</div>
+</body>
+</html>
