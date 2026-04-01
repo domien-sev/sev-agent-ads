@@ -20,6 +20,11 @@ let alertsTask: cron.ScheduledTask | null = null;
  * Both post results to the #ads-performance Slack channel via Directus agent_events.
  */
 export function initScheduler(agent: AdsAgent): void {
+  if (process.env.PAPERCLIP_SCHEDULING_ENABLED === "true") {
+    console.log("[scheduler] Paperclip scheduling enabled — skipping node-cron (heartbeats are primary)");
+    return;
+  }
+
   initOptimizationCron(agent);
   initAlertsCron(agent);
 }
