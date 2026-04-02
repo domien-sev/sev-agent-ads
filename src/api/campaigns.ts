@@ -51,13 +51,15 @@ export function registerCampaignRoutes(router: ApiRouter, agent: AdsAgent) {
           filter: {
             status: { _eq: "approved" },
             campaign_id: { _null: true },
-            platform_target: { _contains: body.platform },
           },
-          fields: ["id"],
-          limit: 50,
+          fields: ["id", "platform_target"],
+          limit: 200,
         }),
-      ) as { id: string }[];
-      creativeIds = available.map((c) => c.id);
+      ) as { id: string; platform_target: string[] | null }[];
+      // Filter in JS — Directus _contains doesn't work on JSONB arrays
+      creativeIds = available
+        .filter((c) => Array.isArray(c.platform_target) && c.platform_target.includes(body.platform))
+        .map((c) => c.id);
     }
 
     const campaign = await client.request(

@@ -104,7 +104,6 @@ export class AdsAgent extends BaseAgent {
       this.metaAds = new MetaAdsClient({
         accessToken: process.env.META_ACCESS_TOKEN,
         adAccountId: process.env.META_AD_ACCOUNT_ID,
-        pageId: process.env.META_PAGE_ID,
       });
       this.performanceCollector.registerClient(this.metaAds);
     }

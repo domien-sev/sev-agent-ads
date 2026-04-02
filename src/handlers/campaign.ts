@@ -31,16 +31,19 @@ export async function handleCampaign(agent: AdsAgent, message: RoutedMessage): P
 
   // Get approved creatives that aren't in a campaign yet
   const client = getClient(agent);
-  const availableCreatives = (await client.request(
+  const allApproved = (await client.request(
     readItems("ad_creatives", {
       filter: {
         status: { _eq: "approved" },
         campaign_id: { _null: true },
-        platform_target: { _contains: platform },
       },
-      limit: 50,
+      limit: 200,
     }),
   )) as AdCreativeRecord[];
+  // Filter by platform in JS — Directus _contains doesn't work on JSONB arrays
+  const availableCreatives = allApproved.filter(
+    (c) => Array.isArray(c.platform_target) && c.platform_target.includes(platform as AdPlatform),
+  );
 
   if (availableCreatives.length === 0) {
     return {

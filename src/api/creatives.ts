@@ -1,4 +1,4 @@
-import type { AdCreativeRecord, AdProductRecord, CreativeStatus } from "@domien-sev/shared-types";
+import type { AdCreativeRecord, AdPlatform, AdProductRecord, CreativeStatus } from "@domien-sev/shared-types";
 import type { AdsAgent } from "../agent.js";
 import type { ApiRouter } from "./router.js";
 import { getClient, readItems, updateItem } from "../lib/directus.js";
@@ -21,7 +21,8 @@ export function registerCreativeRoutes(router: ApiRouter, agent: AdsAgent) {
     if (status) filter.status = { _eq: status };
     if (tier) filter.tier = { _eq: tier };
     if (type) filter.type = { _eq: type };
-    if (platform) filter.platform_target = { _contains: platform };
+    // platform_target is JSONB array — filter in JS after fetch (Directus _contains doesn't work on JSON)
+    const platformFilter = platform ?? null;
     if (campaign_id) filter.campaign_id = { _eq: campaign_id };
     if (product_id) filter.product_id = { _eq: product_id };
 
@@ -29,9 +30,16 @@ export function registerCreativeRoutes(router: ApiRouter, agent: AdsAgent) {
     const queryOpts: Record<string, unknown> = { limit, offset, sort: ["-date_created"] };
     if (Object.keys(filter).length > 0) queryOpts.filter = filter;
 
-    const creatives = await client.request(
+    let creatives = await client.request(
       readItems("ad_creatives", queryOpts),
     ) as AdCreativeRecord[];
+
+    // Apply platform filter in JS (JSONB array field)
+    if (platformFilter) {
+      creatives = creatives.filter(
+        (c) => Array.isArray(c.platform_target) && c.platform_target.includes(platformFilter as AdPlatform),
+      );
+    }
 
     return { status: 200, data: { items: creatives, limit, offset } };
   });
