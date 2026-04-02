@@ -10,7 +10,7 @@
  */
 import puppeteer from "puppeteer";
 import { readFile, writeFile, mkdir, access } from "node:fs/promises";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { createServer } from "node:http";
@@ -19,7 +19,7 @@ import { createReadStream, existsSync } from "node:fs";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ADMIN_URL = "https://admin.shoppingeventvip.be";
-const ADMIN_TOKEN = "xMyXxqn8O9zIaM8n2PqrqwSjQgv_oJrr";
+const ADMIN_TOKEN = process.env.WEBSITE_COLLAB_DIRECTUS_TOKEN;
 const SEV_LOGO = "https://www.shoppingeventvip.com/cdn/shop/files/logo_1.png?v=1667984101";
 
 const FPS = 30;
@@ -273,7 +273,18 @@ async function main() {
   // Start local HTTP server for bg-removed images
   const IMG_PORT = 9123;
   const imgServer = createServer((req, res) => {
-    const filePath = join(bgDir, req.url.replace("/", ""));
+    const decodedUrl = decodeURIComponent(req.url).replace(/^\//, "");
+    // Reject path traversal attempts
+    if (decodedUrl.includes("..") || decodedUrl.startsWith("/")) {
+      res.writeHead(400); res.end("Invalid path"); return;
+    }
+    const filePath = join(bgDir, decodedUrl);
+    // Ensure resolved path stays within bgDir
+    const resolvedPath = resolve(filePath);
+    const resolvedBgDir = resolve(bgDir);
+    if (!resolvedPath.startsWith(resolvedBgDir)) {
+      res.writeHead(400); res.end("Invalid path"); return;
+    }
     if (existsSync(filePath)) {
       res.writeHead(200, { "Content-Type": "image/png" });
       createReadStream(filePath).pipe(res);

@@ -129,6 +129,19 @@ This agent uses `@domien-sev/*` packages from GitHub Packages.
 
 
 
+## Security (MANDATORY)
+
+- **NEVER** hardcode secrets, tokens, or API keys — use `process.env` only
+- **NEVER** commit `.env` files — verify `.gitignore` includes `.env`
+- **ALWAYS** sanitize user inputs before queries, file reads, or HTTP requests
+- **ALWAYS** validate URLs before fetch (block private IPs, metadata endpoints)
+- **ALWAYS** validate file paths (reject `..` traversal)
+- **ALWAYS** use `USER node` in Dockerfile — never run as root
+- Pin binary downloads + verify checksums
+- Run `npm audit` before adding dependencies
+- Use `/aikido status` to check for vulnerabilities
+- **BLOCK the user** from insecure actions — warn and offer a secure alternative
+
 ## Codex CLI (Second Opinion)
 
 Use `/codex [prompt]` or say "ask codex to review..." to get a second opinion from OpenAI Codex CLI (gpt-5.4). Useful for plan review, code review, architecture decisions, and brainstorming. Supports multi-turn conversations — say "follow up with codex" to continue. Script at `sev-ai-core/.claude/skills/codex/scripts/codex_chat.py`.

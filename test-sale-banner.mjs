@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // --- Config ---
 const ADMIN_URL = "https://admin.shoppingeventvip.be";
-const ADMIN_TOKEN = "xMyXxqn8O9zIaM8n2PqrqwSjQgv_oJrr";
+const ADMIN_TOKEN = process.env.WEBSITE_COLLAB_DIRECTUS_TOKEN;
 const SEV_LOGO_URL = "https://www.shoppingeventvip.com/cdn/shop/files/logo_1.png?v=1667984101";
 
 const WIDTH = 300;

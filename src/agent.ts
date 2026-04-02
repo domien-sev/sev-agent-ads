@@ -79,7 +79,6 @@ export class AdsAgent extends BaseAgent {
           defaultModel: process.env.FAL_VIDEO_MODEL,
         },
       }),
-      ...(process.env.PLAINLY_API_KEY && { plainly: { apiKey: process.env.PLAINLY_API_KEY } }),
     });
 
     if (process.env.PHOTOROOM_API_KEY) {

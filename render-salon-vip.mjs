@@ -20,7 +20,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // --- Config ---
 const ADMIN_URL = "https://admin.shoppingeventvip.be";
-const ADMIN_TOKEN = "xMyXxqn8O9zIaM8n2PqrqwSjQgv_oJrr";
+const ADMIN_TOKEN = process.env.WEBSITE_COLLAB_DIRECTUS_TOKEN;
 const SEV_LOGO = "https://www.shoppingeventvip.com/cdn/shop/files/logo_1.png?v=1667984101";
 
 const FPS = 30;
@@ -174,12 +174,28 @@ async function startAssetServer() {
     _server = createServer((req, res) => {
       // Serve from multiple directories
       const decodedPath = decodeURIComponent(req.url).replace(/^\//, "");
+
+      // Reject path traversal attempts
+      if (decodedPath.includes("..") || decodedPath.startsWith("/")) {
+        res.writeHead(400);
+        res.end("Invalid path");
+        return;
+      }
+
       const candidates = [
         join(ASSETS_DIR, decodedPath),
         join(TMP_ASSETS, decodedPath),
       ];
 
       for (const filePath of candidates) {
+        // Ensure resolved path stays within the allowed directory
+        const resolvedPath = resolve(filePath);
+        const resolvedAssets = resolve(ASSETS_DIR);
+        const resolvedTmp = resolve(TMP_ASSETS);
+        if (!resolvedPath.startsWith(resolvedAssets) && !resolvedPath.startsWith(resolvedTmp)) {
+          continue;
+        }
+
         if (existsSync(filePath)) {
           const ext = filePath.split(".").pop().toLowerCase();
           const types = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", svg: "image/svg+xml" };
@@ -189,7 +205,7 @@ async function startAssetServer() {
         }
       }
       res.writeHead(404);
-      res.end("Not found: " + decodedPath);
+      res.end("Not found");
     });
     _server.listen(_port, () => {
       _port = _server.address().port; // read actual assigned port
