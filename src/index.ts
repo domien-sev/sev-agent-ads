@@ -21,6 +21,11 @@ async function main() {
       const result = await runDailyAlerts(a as AdsAgent);
       return `${result.alerts.length} alerts`;
     },
+  }, {
+    routineTitleMap: {
+      "Ads Hourly Optimize": "hourly-optimize",
+      "Ads Daily Alerts": "daily-alerts",
+    },
   });
   const apiRouter = createApiRouter(agent);
 
